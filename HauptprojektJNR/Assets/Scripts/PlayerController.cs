@@ -3,25 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class MovePlayer : MonoBehaviourPun
+public class PlayerController : MonoBehaviourPun
 {
     [SerializeField] private LayerMask platformLayer;
+    public LayerMask enemyLayers;
+
+    //Components
     private Animator animPlayer;
-    private Vector2 movement;
-    private float moveSpeed = 2f;
-    private float jumpForce = 5f;
     Rigidbody2D playerRb;
     PhotonView photonView;
     SpriteRenderer spriteR;
     private BoxCollider2D playerBox;
+    private Transform attackPoint;
+
+    //Attribute
+    private Vector2 movement;
+    private float moveSpeed = 2f;
+    private float jumpForce = 5f;
+    public float attackRange = 1f;
+    
+
+    
     void Start()
     {
-       animPlayer = GetComponent<Animator>();
-        playerRb = GetComponent<Rigidbody2D>();
+        animPlayer = GetComponent<Animator>();
         animPlayer.SetBool("Grounded", true);
+        playerRb = GetComponent<Rigidbody2D>();
         photonView = GetComponent<PhotonView>();
         spriteR = GetComponent<SpriteRenderer>();
         playerBox = GetComponent<BoxCollider2D>();
+        attackPoint = GetComponentInChildren<Transform>();
     }
 
     // Update is called once per frame
@@ -50,12 +61,33 @@ public class MovePlayer : MonoBehaviourPun
         {
             photonView.RPC("FlipFalse", RpcTarget.AllBuffered);
         }
+        if (Input.GetKeyDown("b"))
+        {
+            photonView.RPC("Attack", RpcTarget.AllBuffered);
+        }
     }
     private bool isGrounded()
     {
        RaycastHit2D raycastHit2D =  Physics2D.BoxCast(playerBox.bounds.center, playerBox.bounds.size, 0f, Vector2.down,1f, platformLayer);
         Debug.Log(raycastHit2D.collider != null);
         return (raycastHit2D.collider != null);
+    }
+    [PunRPC]
+    private void Attack()
+    {
+        //Play Animation
+        animPlayer.SetTrigger("Attack");
+
+        //Detect Enemies in range of Attack
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
+        //Damage
+        foreach (BoxCollider2D enemy in hitEnemies)
+        {
+            
+            Debug.Log("Damage");
+            enemy.GetComponentInParent<EnemyController>().health--;
+
+        }
     }
     [PunRPC]
     private void FlipTrue()
@@ -70,4 +102,5 @@ public class MovePlayer : MonoBehaviourPun
         transform.localScale = new Vector3(1, 1, 1);
         //spriteR.flipX = false;
     }
+    
 }

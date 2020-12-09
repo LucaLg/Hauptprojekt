@@ -11,14 +11,13 @@ GameObject:
   - component: {fileID: 7032596770027271041}
   - component: {fileID: 7032596770027271040}
   - component: {fileID: 7032596770027271047}
-  - component: {fileID: 7032596770027271048}
-  - component: {fileID: 7032596770027271055}
   - component: {fileID: 7032596770027271054}
   - component: {fileID: 7032596770027271053}
   - component: {fileID: 7032596770027271052}
   - component: {fileID: 7032596770027271043}
   - component: {fileID: 7032596770027271042}
   - component: {fileID: 679026334}
+  - component: {fileID: 713343940645459300}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -111,37 +110,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &7032596770027271048
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7032596770027271045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5841b7b18caf2104cbcc27a2633692fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  platformLayer:
-    serializedVersion: 2
-    m_Bits: 512
---- !u!114 &7032596770027271055
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7032596770027271045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1bb8a5bfb606c5741953f39dff5a5fb3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attackRange: 2
-  enemyLayers:
-    serializedVersion: 2
-    m_Bits: 256
 --- !u!95 &7032596770027271054
 Animator:
   serializedVersion: 3
@@ -268,3 +236,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.48259312, y: 1.1904957}
   m_EdgeRadius: 0
+--- !u!114 &713343940645459300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7032596770027271045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5841b7b18caf2104cbcc27a2633692fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  platformLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  enemyLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  attackRange: 1
