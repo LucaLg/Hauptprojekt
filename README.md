@@ -1,6 +1,6 @@
 # Hauptprojekt
 Hauptprojekt Spiel im Fachprojekt
-- [x] Player Jump verbessern
+- [ ] Player Jump verbessern
 - [ ] Player Jump Animationen
 - [ ] Player Attack Animation verbessern
 - [ ] Player Health
