@@ -48,8 +48,7 @@ public class PlayerController : MonoBehaviourPun
         //Movement
         movement.x = Input.GetAxisRaw("Horizontal");
         if(Input.GetAxis("Horizontal") != 0) {
-            playerRb.MovePosition(playerRb.position + movement * moveSpeed * Time.fixedDeltaTime);
-            
+            playerRb.velocity = new Vector3(movement.x * moveSpeed, playerRb.velocity.y, 0);
             animPlayer.SetBool("isMoving", true);
         }
         else
