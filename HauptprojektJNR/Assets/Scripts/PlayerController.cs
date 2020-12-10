@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviourPun
 {
@@ -18,7 +19,11 @@ public class PlayerController : MonoBehaviourPun
     private Transform healthBarOverHead;
     private Transform healthBar;
     private Transform staminaBar;
+    private Transform xpBar;
     public GameObject playerCam;
+    public GameObject menuCanvas;
+    public Text txtLevel;
+    public Text txtAttrPoints;
 
     //Attribute
     private Vector2 movement;
@@ -31,24 +36,33 @@ public class PlayerController : MonoBehaviourPun
     public float stamina;
     public float healthRegeneration = 0.5f;
     public float staminaRegeneration = 2f;
-    private float regenerationTimer;
+    private int level = 1;
+    private float xp = 0f;
+    private float xpToNextLevel;
+    private float baseXpNeeded = 100;
+    private int attributePoints = 0;
+    private bool menuOpen = false;
     
 
     
     void Start()
-    {
+    {   
+        photonView = GetComponent<PhotonView>();
+        if (!photonView.IsMine) return;
         health = maxHealth;
         stamina = maxStamina;
         healthBarOverHead = transform.Find("HealthBarOverHead/Bar");
         healthBar = transform.Find("Camera/HealthBar/Bar");
         staminaBar = transform.Find("Camera/StaminaBar/Bar");
+        xpBar = transform.Find("Camera/XpBar/Bar");
         animPlayer = GetComponent<Animator>();
         animPlayer.SetBool("Grounded", true);
         playerRb = GetComponent<Rigidbody2D>();
-        photonView = GetComponent<PhotonView>();
+        
         spriteR = GetComponent<SpriteRenderer>();
         playerBox = GetComponent<BoxCollider2D>();
         attackPoint = GetComponentInChildren<Transform>();
+        xpToNextLevel = baseXpNeeded * Mathf.Pow(level, 2) * 0.1f;
         if (photonView.IsMine)
         {
             playerCam.SetActive(true);
@@ -59,6 +73,15 @@ public class PlayerController : MonoBehaviourPun
     void Update()
     {
         if (!photonView.IsMine) return;
+
+        //Menu
+        
+        if (Input.GetKeyDown("tab"))
+        {
+            menuOpen = !menuOpen;
+            menuCanvas.SetActive(menuOpen);
+            
+        }
 
         //Movement
         movement.x = Input.GetAxisRaw("Horizontal");
@@ -92,7 +115,7 @@ public class PlayerController : MonoBehaviourPun
             photonView.RPC("Attack", RpcTarget.AllBuffered);
         }
 
-        //Update Health & Stamina (Ergibt 0 - Warum?? Integer Division?)
+        //Update Health, XP, Stamina (Ergibt manchmal 0 - Warum?? Integer Division?)
         
          health += healthRegeneration*Time.deltaTime;
          if(health >= maxHealth)
@@ -104,14 +127,35 @@ public class PlayerController : MonoBehaviourPun
          {
          stamina = maxStamina;
          }
+
+        if(xp >= xpToNextLevel)
+        {
+            LevelUp();
+            
+        }
         float healthPercentage = health / maxHealth;
         float staminaPercentage = stamina / maxStamina;
-        Debug.Log(healthPercentage + " | " + staminaPercentage + " | " + regenerationTimer);
+        float xpPercentage = xp / xpToNextLevel;
+        Debug.Log(healthPercentage + " | " + staminaPercentage + " | " + xpPercentage);
         healthBar.localScale = new Vector3(healthPercentage, 1, 1);
         healthBarOverHead.localScale = new Vector3(healthPercentage, 1, 1);
         staminaBar.localScale = new Vector3(staminaPercentage, 1, 1);
-        regenerationTimer += Time.deltaTime;
+        xpBar.localScale = new Vector3(xpPercentage, 1, 1);
+
         
+        
+        
+    }
+
+    private void LevelUp()
+    {
+        level++;
+        xp -= xpToNextLevel;
+        xpToNextLevel = baseXpNeeded * Mathf.Pow(level, 2) * 0.1f; //f(x) = x^2 * 0.1, x = level
+        attributePoints += 1;
+        txtAttrPoints.text = "Points: " + attributePoints;
+        txtLevel.text = "Lvl " + level;
+
     }
     private bool isGrounded()
     {
@@ -119,6 +163,23 @@ public class PlayerController : MonoBehaviourPun
         bool grounded = raycastHit2D.collider != null;
         animPlayer.SetBool("Grounded", grounded);
         return (grounded);
+    }
+
+    public void IncreaseHealth()
+    {
+
+    }
+    public void IncreaseStamina()
+    {
+
+    }
+    public void IncreaseRange()
+    {
+
+    }
+    public void IncreaseDamage()
+    {
+
     }
     [PunRPC]
     private void Attack()
