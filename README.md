@@ -9,12 +9,12 @@ Hauptprojekt Spiel im Fachprojekt
 - [ ] Player Health uber Kopf
 - [ ] Player Ausdauer System mit UI
 - [ ] Player Level System
-- [ ] Gegner Target Detection Raycast 
-- [ ] Gegner Movment ohne Astar MovePosition Rigidbody 
-- [ ] Gegner Animation Laufen
-- [ ] Gegner Animation Idle 
-- [ ] Gegner Animation schlagen
-- [ ] Gegner Animation Dead
+- [ x] Gegner Target Detection Raycast 
+- [x ] Gegner Movment ohne Astar MovePosition Rigidbody 
+- [x ] Gegner Animation Laufen
+- [x ] Gegner Animation Idle 
+- [ x] Gegner Animation schlagen
+- [x ] Gegner Animation Dead
 - [ ] Gegner Attack 
 - [ ] Gegner Loot
 - [ ] Level aufbauen
