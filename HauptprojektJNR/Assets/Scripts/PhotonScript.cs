@@ -16,6 +16,7 @@ public class PhotonScript : MonoBehaviourPunCallbacks
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 2;
         PhotonNetwork.JoinOrCreateRoom("Room1", roomOptions, null);
+        
     }
     public override void OnJoinedRoom()
     {

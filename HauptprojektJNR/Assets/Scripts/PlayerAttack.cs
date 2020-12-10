@@ -42,7 +42,9 @@ public class PlayerAttack : MonoBehaviour
         {
             Debug.Log("Damage");
             enemy.GetComponentInParent<EnemyController>().health--;
-           
+            enemy.GetComponentInParent<EnemyController>().hit = true;
+
+
         }
     }
     

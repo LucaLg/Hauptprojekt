@@ -56,6 +56,7 @@ public class MovePlayer : MonoBehaviourPun
        RaycastHit2D raycastHit2D =  Physics2D.BoxCast(playerBox.bounds.center, playerBox.bounds.size, 0f, Vector2.down,1f, platformLayer);
         Debug.Log(raycastHit2D.collider != null);
         return (raycastHit2D.collider != null);
+        
     }
     [PunRPC]
     private void FlipTrue()
