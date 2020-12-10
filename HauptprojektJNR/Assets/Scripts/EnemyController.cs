@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour,IPunObservable
 {
-    public float maxHealth = 4;
+    public float maxHealth;
     public float health;
     private PhotonView photonView;
     bool isDead = false;
@@ -17,7 +17,7 @@ public class EnemyController : MonoBehaviour,IPunObservable
     public Slider healthbar;
     private Color lowHealth;
     private Color highHealth;
-    private Vector3 offset = new Vector3(0.3f, 0.5f, 0);
+    private Vector3 offset = new Vector3(0f, 0.8f, 0);
     private float[] healthArray;
     //Hit
     public bool hit = false;
@@ -118,7 +118,7 @@ public class EnemyController : MonoBehaviour,IPunObservable
             enemyAnimator.SetInteger("AnimState", 1);
             transform.position = Vector3.MoveTowards(transform.position, target, Time.deltaTime * enemyMoveSpeed);
         }
-        if (targetFound && Vector3.Distance(transform.position, target) <= distanceToStop) {
+        if (targetFound && Vector3.Distance(transform.position, target) <= distanceToStop+0.2f) {
             enemyAnimator.SetInteger("AnimState", 2);
         }
         if (!targetFound)
