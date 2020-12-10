@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviourPun
     private BoxCollider2D playerBox;
     private Transform attackPoint;
     private Transform healthBar;
+    public GameObject playerCam;
 
     //Attribute
     private Vector2 movement;
@@ -38,6 +39,10 @@ public class PlayerController : MonoBehaviourPun
         spriteR = GetComponent<SpriteRenderer>();
         playerBox = GetComponent<BoxCollider2D>();
         attackPoint = GetComponentInChildren<Transform>();
+        if (photonView.IsMine)
+        {
+            playerCam.SetActive(true);
+        }
     }
 
     // Update is called once per frame
@@ -118,5 +123,5 @@ public class PlayerController : MonoBehaviourPun
         transform.localScale = new Vector3(1, 1, 1);
         //spriteR.flipX = false;
     }
-    
+
 }
