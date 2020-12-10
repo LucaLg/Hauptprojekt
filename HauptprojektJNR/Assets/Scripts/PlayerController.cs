@@ -15,7 +15,9 @@ public class PlayerController : MonoBehaviourPun
     SpriteRenderer spriteR;
     private BoxCollider2D playerBox;
     private Transform attackPoint;
+    private Transform healthBarOverHead;
     private Transform healthBar;
+    private Transform staminaBar;
     public GameObject playerCam;
 
     //Attribute
@@ -25,13 +27,21 @@ public class PlayerController : MonoBehaviourPun
     public float attackRange = 1f;
     public float maxHealth = 10f;
     public float health;
+    public float maxStamina = 10f;
+    public float stamina;
+    public float healthRegeneration = 0.5f;
+    public float staminaRegeneration = 2f;
+    private float regenerationTimer;
     
 
     
     void Start()
     {
         health = maxHealth;
-        healthBar = transform.Find("HealthBar/Bar");
+        stamina = maxStamina;
+        healthBarOverHead = transform.Find("HealthBarOverHead/Bar");
+        healthBar = transform.Find("Camera/HealthBar/Bar");
+        staminaBar = transform.Find("Camera/StaminaBar/Bar");
         animPlayer = GetComponent<Animator>();
         animPlayer.SetBool("Grounded", true);
         playerRb = GetComponent<Rigidbody2D>();
@@ -61,8 +71,8 @@ public class PlayerController : MonoBehaviourPun
             animPlayer.SetBool("isMoving", false);
         }
         bool grounded = isGrounded();
-        if (Input.GetKeyDown("space") && grounded){
-            Debug.Log("Jump");
+        if (Input.GetKeyDown("space") && grounded && stamina >= 3){
+            stamina -= 3;
             animPlayer.SetTrigger("Jump");
             playerRb.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
             playerRb.velocity = Vector2.up * jumpForce;
@@ -76,22 +86,37 @@ public class PlayerController : MonoBehaviourPun
         {
             photonView.RPC("FlipFalse", RpcTarget.AllBuffered);
         }
-        if (Input.GetKeyDown("b"))
+        if (Input.GetKeyDown("b") && stamina >= 2)
         {
-            Debug.Log("Attack pressed");
+            stamina -= 2;
             photonView.RPC("Attack", RpcTarget.AllBuffered);
         }
 
-        //Update Health (Ergibt 0 - Warum??)
+        //Update Health & Stamina (Ergibt 0 - Warum?? Integer Division?)
+        
+         health += healthRegeneration*Time.deltaTime;
+         if(health >= maxHealth)
+         {
+         health = maxHealth;
+         }
+         stamina += staminaRegeneration*Time.deltaTime;
+         if(stamina >= maxStamina)
+         {
+         stamina = maxStamina;
+         }
         float healthPercentage = health / maxHealth;
-        Debug.Log(healthPercentage);
+        float staminaPercentage = stamina / maxStamina;
+        Debug.Log(healthPercentage + " | " + staminaPercentage + " | " + regenerationTimer);
         healthBar.localScale = new Vector3(healthPercentage, 1, 1);
+        healthBarOverHead.localScale = new Vector3(healthPercentage, 1, 1);
+        staminaBar.localScale = new Vector3(staminaPercentage, 1, 1);
+        regenerationTimer += Time.deltaTime;
+        
     }
     private bool isGrounded()
     {
         RaycastHit2D raycastHit2D =  Physics2D.BoxCast(playerBox.bounds.center, playerBox.bounds.size, 0f, Vector2.down,0.1f, platformLayer);
         bool grounded = raycastHit2D.collider != null;
-        Debug.Log(grounded);
         animPlayer.SetBool("Grounded", grounded);
         return (grounded);
     }
@@ -100,7 +125,6 @@ public class PlayerController : MonoBehaviourPun
     {
         //Play Animation
         animPlayer.SetTrigger("Attack");
-        Debug.Log("Attack entered");
         //Detect Enemies in range of Attack
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
         //Damage
@@ -114,6 +138,7 @@ public class PlayerController : MonoBehaviourPun
     private void FlipTrue()
     {
         transform.localScale = new Vector3(-1, 1, 1);
+        playerCam.transform.localScale = new Vector3(-1, 1, 1);
         //spriteR.flipX = true;
     }
     [PunRPC]
@@ -121,6 +146,7 @@ public class PlayerController : MonoBehaviourPun
     {
 
         transform.localScale = new Vector3(1, 1, 1);
+        playerCam.transform.localScale = new Vector3(1, 1, 1);
         //spriteR.flipX = false;
     }
 
