@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4534201777113708328}
   - component: {fileID: 6714640246033041983}
   - component: {fileID: 4081142400533771944}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4075022239889724028}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: HealthBarOverHead
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 70896700188683938}
   - component: {fileID: 2954029987991802882}
   - component: {fileID: 2683901204736589974}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -201,7 +201,7 @@ GameObject:
   - component: {fileID: 7278597390258153204}
   - component: {fileID: 2852831396255143940}
   - component: {fileID: 5332664525797632531}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: btnIncreaseStamina
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -329,7 +329,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9098602765297251983}
   - component: {fileID: 8349694928858701361}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BarSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -410,7 +410,7 @@ GameObject:
   m_Component:
   - component: {fileID: 660471653782009781}
   - component: {fileID: 8841225273541757922}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BarSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -490,7 +490,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7677035002326903798}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -523,7 +523,7 @@ GameObject:
   - component: {fileID: 6507050638881473452}
   - component: {fileID: 8717635995511322998}
   - component: {fileID: 5685437471045815826}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -599,7 +599,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 959021251033935149}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -631,7 +631,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7513814734713586897}
   - component: {fileID: 1967316782631742639}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -711,7 +711,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6308548148277394545}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -745,7 +745,7 @@ GameObject:
   - component: {fileID: 9173294321758955187}
   - component: {fileID: 6772117087677679079}
   - component: {fileID: 7175584683035854847}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: GameCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -842,7 +842,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8228434396045548022}
   - component: {fileID: 1232508406512290367}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -925,7 +925,7 @@ GameObject:
   - component: {fileID: 2483102007285989264}
   - component: {fileID: 184094374786860952}
   - component: {fileID: 5379789982852957958}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: btnIncreaseAttackRange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1053,7 +1053,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2483242023653650385}
   - component: {fileID: 5650041963391244977}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1133,7 +1133,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4018288263115851881}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: XpBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1168,7 +1168,7 @@ GameObject:
   - component: {fileID: 2035367090581359298}
   - component: {fileID: 6783608738942892365}
   - component: {fileID: 2245675665466375779}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1245,7 +1245,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5967318252720946950}
   - component: {fileID: 2677408425541551055}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1326,7 +1326,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8018992659813570008}
   - component: {fileID: 993241484171604027}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1406,7 +1406,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6536373143831682699}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1442,7 +1442,7 @@ GameObject:
   - component: {fileID: 2682992876490984896}
   - component: {fileID: 2842836895520584967}
   - component: {fileID: 6133729668634590668}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: MenuCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1543,7 +1543,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2975143963857324763}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: StaminaBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1576,7 +1576,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 91884906230042505}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1608,7 +1608,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7125243907829406663}
   - component: {fileID: 1992869716589819196}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BarSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1690,7 +1690,7 @@ GameObject:
   - component: {fileID: 8886325777857203036}
   - component: {fileID: 4019417263264122165}
   - component: {fileID: 7764967428731362099}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: txtLevel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1768,7 +1768,7 @@ GameObject:
   - component: {fileID: 3088223396388201196}
   - component: {fileID: 6203367969335359425}
   - component: {fileID: 7601623045218385827}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: txtAttrPoints
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1845,7 +1845,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6442066735937631314}
   - component: {fileID: 2510486577988543471}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1928,7 +1928,7 @@ GameObject:
   - component: {fileID: 3394633872475825276}
   - component: {fileID: 4687579844745676248}
   - component: {fileID: 2361743931349468215}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: btnIncreaseAttackDamage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2056,7 +2056,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5062988114583386618}
   - component: {fileID: 3942217051137808291}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BarSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2137,7 +2137,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7861429097178671858}
   - component: {fileID: 9162218722924391792}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2219,7 +2219,7 @@ GameObject:
   - component: {fileID: 4980168113027180179}
   - component: {fileID: 4073645134116818963}
   - component: {fileID: 3845228101062591571}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2307,7 +2307,7 @@ GameObject:
   - component: {fileID: 9209520994505181524}
   - component: {fileID: 8419879784468594281}
   - component: {fileID: 4444235723396532048}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2386,7 +2386,7 @@ GameObject:
   - component: {fileID: 1537202228226312658}
   - component: {fileID: 5963913851471308749}
   - component: {fileID: 538587555879365475}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: btnIncreaseHealth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2514,7 +2514,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8124320905207026111}
   - component: {fileID: 8313997211665536456}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2741,6 +2741,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032596770027271045, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7032596770027271053, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}
