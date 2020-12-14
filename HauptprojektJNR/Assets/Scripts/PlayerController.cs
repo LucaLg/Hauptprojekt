@@ -111,6 +111,8 @@ public class PlayerController : MonoBehaviourPun
         }
         if (Input.GetKeyDown("b") && stamina >= 2)
         {
+            //Play Animation
+            animPlayer.SetTrigger("Attack");
             stamina -= 2;
             photonView.RPC("Attack", RpcTarget.AllBuffered);
         }
@@ -184,8 +186,7 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     private void Attack()
     {
-        //Play Animation
-        animPlayer.SetTrigger("Attack");
+        
         //Detect Enemies in range of Attack
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
         //Damage
