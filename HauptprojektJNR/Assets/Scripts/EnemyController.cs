@@ -21,7 +21,10 @@ public class EnemyController : MonoBehaviour,IPunObservable
     private float[] healthArray;
     //Hit
     public bool hit = false;
-   
+    //Attack Speed
+    public float attackRate;
+    private float nextAttackTime = 0f;
+    private bool attackNow=true;
     [SerializeField] LayerMask playerLayer;
     // Start is called before the first frame update
     void Start()
@@ -63,6 +66,7 @@ public class EnemyController : MonoBehaviour,IPunObservable
                 Invoke("Destroy", 0.8f);
             }
         }
+        //photonView.RPC("attackZeit", RpcTarget.AllBuffered);
     }
     private void FixedUpdate()
     {
@@ -118,14 +122,34 @@ public class EnemyController : MonoBehaviour,IPunObservable
             enemyAnimator.SetInteger("AnimState", 1);
             transform.position = Vector3.MoveTowards(transform.position, target, Time.deltaTime * enemyMoveSpeed);
         }
-        if (targetFound && Vector3.Distance(transform.position, target) <= distanceToStop+0.2f) {
-            enemyAnimator.SetInteger("AnimState", 2);
+        if (targetFound && Vector3.Distance(transform.position, target) <= distanceToStop+0.5f) {
+            //Attack
+            photonView.RPC("Attack", RpcTarget.AllBuffered);
+            
         }
         if (!targetFound)
         {
             enemyAnimator.SetInteger("AnimState", 0);
         }
     }
+    [PunRPC]
+    void Attack()
+    {
+
+        if (Time.time >= nextAttackTime)
+        {
+            
+            enemyAnimator.SetInteger("AnimState", 2);
+            //Do Damage
+            nextAttackTime = Time.time + attackRate;
+            
+        }
+        else
+        {
+            enemyAnimator.SetInteger("AnimState", 0);
+        }
+    }
+   
    [PunRPC]
     void Die()
     {
