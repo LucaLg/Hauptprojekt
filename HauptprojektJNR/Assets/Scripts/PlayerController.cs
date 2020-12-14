@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviourPun
     PhotonView photonView;
     SpriteRenderer spriteR;
     private BoxCollider2D playerBox;
-    private Transform attackPoint;
+    public Transform attackPoint;
     private Transform healthBarOverHead;
     private Transform healthBar;
     private Transform staminaBar;
@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviourPun
         
         spriteR = GetComponent<SpriteRenderer>();
         playerBox = GetComponent<BoxCollider2D>();
-        attackPoint = GetComponentInChildren<Transform>();
+        //attackPoint = GetComponentInChildren<Transform>();
         xpToNextLevel = baseXpNeeded * Mathf.Pow(level, 2) * 0.1f;
         if (photonView.IsMine)
         {
