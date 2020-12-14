@@ -6,4 +6,7 @@ Hauptprojekt Spiel im Fachprojekt
 - [ ] Gegner Loot
 - [ ] Level aufbauen
 - [ ] Player Attack Animation verbessern
-
+- [ ] Checkpoints
+- [ ] Boss
+- [ ] Player Die 
+- [ ] Respawn an Checkpoint
