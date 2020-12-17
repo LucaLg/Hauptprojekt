@@ -6,29 +6,43 @@ using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour,IPunObservable
 {
-    public float maxHealth;
-    public float health;
+
+    //Components
+    [SerializeField] LayerMask playerLayers;
     private PhotonView photonView;
-    bool isDead = false;
-    public float enemyMoveSpeed;
     private Rigidbody2D enemyRb;
     private Animator enemyAnimator;
+    public Camera worldCamera;
     //Healthbar
     public Slider healthbar;
     private Color lowHealth;
     private Color highHealth;
-    private Vector3 offset = new Vector3(0f, 0.8f, 0);
+    private Vector3 offset = new Vector3(-0.2f, 0.8f, 0);
     private float[] healthArray;
-    //Hit
-    public bool hit = false;
-    //Attack Speed
+    public Transform attackPoint;
+   
+    //Attribute  
     public float attackRate;
     private float nextAttackTime = 0f;
-    private bool attackNow=true;
-    [SerializeField] LayerMask playerLayer;
-    // Start is called before the first frame update
+    private bool blocked = false;
+    public float maxHealth;
+    public float health;
+    bool isDead = false;
+    public float enemyMoveSpeed;
+    public bool hit = false;
+    public float attackRange;
+    public float damage;
     void Start()
     {
+        //Suche AttackPoint
+        foreach(Transform child in transform)
+        {
+            if(child.tag == "EnemyAttackPoint")
+            {
+                attackPoint = child.transform;
+               
+            }
+        }
         photonView = GetComponent<PhotonView>();
         enemyRb = GetComponent<Rigidbody2D>();
         enemyAnimator = GetComponent<Animator>();
@@ -36,7 +50,6 @@ public class EnemyController : MonoBehaviour,IPunObservable
        
         //HealthbarSetup
         health = maxHealth;
-        //healthbar = GetComponentInChildren<Canvas>().GetComponentInChildren<Slider>();
         lowHealth = Color.red;
         highHealth = Color.green;
         healthArray = new float[] { health, maxHealth };
@@ -84,10 +97,10 @@ public class EnemyController : MonoBehaviour,IPunObservable
     {
         
         bool targetFound = false;
-        float distanceToStop = 1.1f;
+        float distanceToStop = attackRange ;
         Vector3 target = transform.position;
-        RaycastHit2D targetRight = Physics2D.Raycast(transform.position, Vector3.right,5f,playerLayer);
-        RaycastHit2D targetLeft = Physics2D.Raycast(transform.position, Vector3.left, 5f, playerLayer);
+        RaycastHit2D targetRight = Physics2D.Raycast(transform.position, Vector3.right,5f,playerLayers);
+        RaycastHit2D targetLeft = Physics2D.Raycast(transform.position, Vector3.left, 5f, playerLayers);
         if(targetLeft.collider != null && targetRight.collider != null)
         {
             if(targetRight.distance >= targetLeft.distance)
@@ -140,7 +153,15 @@ public class EnemyController : MonoBehaviour,IPunObservable
         {
             
             enemyAnimator.SetInteger("AnimState", 2);
-            //Do Damage
+            //Detect Enemies in range of Attack
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, playerLayers);
+            //Damage
+            foreach (CircleCollider2D enemy in hitEnemies)
+            {
+                //Damage wird nicht von anderer Klasse manipuliert
+                enemy.GetComponent<PlayerController>().IsAttacked(damage);
+                //enemy.GetComponentInParent<EnemyController>().health--;
+            }
             nextAttackTime = Time.time + attackRate;
             
         }
@@ -149,7 +170,16 @@ public class EnemyController : MonoBehaviour,IPunObservable
             enemyAnimator.SetInteger("AnimState", 0);
         }
     }
-   
+    public void IsAttacked(float dmg)
+    {
+        if (!blocked)
+        {
+            hit = true;
+            this.health = health - dmg;
+        }
+        
+        
+    }
    [PunRPC]
     void Die()
     {
@@ -174,7 +204,9 @@ public class EnemyController : MonoBehaviour,IPunObservable
     [PunRPC]
     public void SetHealth(float[] healthPara)
     {
-        healthbar.transform.position = Camera.main.WorldToScreenPoint(transform.position + offset);
+
+        
+        healthbar.transform.position = transform.position + offset;
         healthbar.gameObject.SetActive(healthPara[0] < healthPara[1]);
         healthbar.value = healthPara[0];
         healthbar.maxValue = healthPara[1];

@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviourPun
     Rigidbody2D playerRb;
     PhotonView photonView;
     SpriteRenderer spriteR;
-    private BoxCollider2D playerBox;
+    private Collider2D playerBox;
     public Transform attackPoint;
     private Transform healthBarOverHead;
     private Transform healthBar;
@@ -27,8 +27,8 @@ public class PlayerController : MonoBehaviourPun
 
     //Attribute
     private Vector2 movement;
-    private float moveSpeed = 2f;
-    private float jumpForce = 5f;
+    public float moveSpeed = 2f;
+    public float jumpForce = 5f;
     public float attackRange = 1f;
     public float maxHealth = 10f;
     public float health;
@@ -42,8 +42,8 @@ public class PlayerController : MonoBehaviourPun
     private float baseXpNeeded = 100;
     private int attributePoints = 0;
     private bool menuOpen = false;
-    
-
+    public float damage=1f;
+    private bool blocked = false;
     
     void Start()
     {   
@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviourPun
         playerRb = GetComponent<Rigidbody2D>();
         
         spriteR = GetComponent<SpriteRenderer>();
-        playerBox = GetComponent<BoxCollider2D>();
+        playerBox = GetComponent<CircleCollider2D>();
         //attackPoint = GetComponentInChildren<Transform>();
         xpToNextLevel = baseXpNeeded * Mathf.Pow(level, 2) * 0.1f;
         if (photonView.IsMine)
@@ -192,8 +192,16 @@ public class PlayerController : MonoBehaviourPun
         //Damage
         foreach (BoxCollider2D enemy in hitEnemies)
         {
-            enemy.GetComponentInParent<EnemyController>().health--;
-
+            //Damage wird nicht von anderer Klasse manipuliert
+            enemy.GetComponent<EnemyController>().IsAttacked(damage);
+            //enemy.GetComponentInParent<EnemyController>().health--;
+        }
+    }
+    public void IsAttacked(float dmg)
+    {
+        if (!blocked)
+        {
+            health = health - dmg;
         }
     }
     [PunRPC]
