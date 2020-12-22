@@ -37,14 +37,15 @@ public class PlayerController : MonoBehaviourPun
     public float healthRegeneration = 0.5f;
     public float staminaRegeneration = 2f;
     private int level = 1;
-    private float xp = 0f;
+    private float xp = 5f;
     private float xpToNextLevel;
     private float baseXpNeeded = 100;
     private int attributePoints = 0;
     private bool menuOpen = false;
     public float damage=1f;
     private bool blocked = false;
-    
+    public bool dead = false;
+    public Vector3 lastCheckpoint;
     void Start()
     {   
         photonView = GetComponent<PhotonView>();
@@ -75,17 +76,17 @@ public class PlayerController : MonoBehaviourPun
         if (!photonView.IsMine) return;
 
         //Menu
-        
+
         if (Input.GetKeyDown("tab"))
         {
             menuOpen = !menuOpen;
             menuCanvas.SetActive(menuOpen);
-            
+
         }
 
         //Movement
         movement.x = Input.GetAxisRaw("Horizontal");
-        if(Input.GetAxis("Horizontal") != 0) {
+        if (Input.GetAxis("Horizontal") != 0) {
             playerRb.velocity = new Vector3(movement.x * moveSpeed, playerRb.velocity.y, 0);
             animPlayer.SetBool("isMoving", true);
         }
@@ -94,13 +95,13 @@ public class PlayerController : MonoBehaviourPun
             animPlayer.SetBool("isMoving", false);
         }
         bool grounded = isGrounded();
-        if (Input.GetKeyDown("space") && grounded && stamina >= 3){
+        if (Input.GetKeyDown("space") && grounded && stamina >= 3) {
             stamina -= 3;
             animPlayer.SetTrigger("Jump");
             playerRb.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
             playerRb.velocity = Vector2.up * jumpForce;
         }
-        
+
         if (Input.GetKeyDown(KeyCode.A))
         {
             photonView.RPC("FlipTrue", RpcTarget.AllBuffered);
@@ -118,22 +119,22 @@ public class PlayerController : MonoBehaviourPun
         }
 
         //Update Health, XP, Stamina (Ergibt manchmal 0 - Warum?? Integer Division?)
-        
-         health += healthRegeneration*Time.deltaTime;
-         if(health >= maxHealth)
-         {
-         health = maxHealth;
-         }
-         stamina += staminaRegeneration*Time.deltaTime;
-         if(stamina >= maxStamina)
-         {
-         stamina = maxStamina;
-         }
 
-        if(xp >= xpToNextLevel)
+        //health += healthRegeneration*Time.deltaTime;
+        if (health >= maxHealth)
+        {
+            health = maxHealth;
+        }
+        stamina += staminaRegeneration * Time.deltaTime;
+        if (stamina >= maxStamina)
+        {
+            stamina = maxStamina;
+        }
+
+        if (xp >= xpToNextLevel)
         {
             LevelUp();
-            
+
         }
         float healthPercentage = health / maxHealth;
         float staminaPercentage = stamina / maxStamina;
@@ -144,9 +145,10 @@ public class PlayerController : MonoBehaviourPun
         staminaBar.localScale = new Vector3(staminaPercentage, 1, 1);
         xpBar.localScale = new Vector3(xpPercentage, 1, 1);
 
-        
-        
-        
+        if (health <= 0) { 
+        photonView.RPC("Die", RpcTarget.AllBuffered);
+        }
+
     }
 
     private void LevelUp()
@@ -197,6 +199,18 @@ public class PlayerController : MonoBehaviourPun
             //enemy.GetComponentInParent<EnemyController>().health--;
         }
     }
+    [PunRPC]
+    void Die()
+    {
+        //Resette Health auf MaxHealth
+        //Resette XP
+        gameObject.SetActive(false);
+        
+        dead = true;
+        xp = 0;
+        health = maxHealth;
+    }
+   
     public void IsAttacked(float dmg)
     {
         if (!blocked)

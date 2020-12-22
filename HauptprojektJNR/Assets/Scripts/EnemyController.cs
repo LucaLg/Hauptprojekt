@@ -32,8 +32,11 @@ public class EnemyController : MonoBehaviour,IPunObservable
     public bool hit = false;
     public float attackRange;
     public float damage;
+    private Vector3 spawnPoint;
     void Start()
     {
+        //SpawnPoint zum Respawn setzten
+        spawnPoint = transform.position;
         //Suche AttackPoint
         foreach(Transform child in transform)
         {
@@ -88,11 +91,18 @@ public class EnemyController : MonoBehaviour,IPunObservable
     /*
      * Find Target 
      */
+    
     void Destroy()
     {
-        PhotonNetwork.Destroy(gameObject);
+        photonView.RPC("disable", RpcTarget.AllBuffered);
+        //PhotonNetwork.Destroy(gameObject);
     }
-   
+    [PunRPC]
+    void disable()
+    {
+        gameObject.SetActive(false);
+    }
+
     void findAndAttackTarget()
     {
         
@@ -146,13 +156,15 @@ public class EnemyController : MonoBehaviour,IPunObservable
         }
     }
     [PunRPC]
-    void Attack()
+     void Attack()
     {
 
         if (Time.time >= nextAttackTime)
         {
-            
+               
             enemyAnimator.SetInteger("AnimState", 2);
+           
+           
             //Detect Enemies in range of Attack
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, playerLayers);
             //Damage
@@ -162,15 +174,16 @@ public class EnemyController : MonoBehaviour,IPunObservable
                 enemy.GetComponent<PlayerController>().IsAttacked(damage);
                 //enemy.GetComponentInParent<EnemyController>().health--;
             }
-            nextAttackTime = Time.time + attackRate;
             
+            nextAttackTime = Time.time + attackRate;
         }
         else
         {
             enemyAnimator.SetInteger("AnimState", 0);
         }
     }
-    public void IsAttacked(float dmg)
+    
+        public void IsAttacked(float dmg)
     {
         if (!blocked)
         {
@@ -211,6 +224,14 @@ public class EnemyController : MonoBehaviour,IPunObservable
         healthbar.value = healthPara[0];
         healthbar.maxValue = healthPara[1];
         healthbar.fillRect.GetComponentInChildren<Image>().color = Color.Lerp(lowHealth, highHealth, healthbar.normalizedValue);
+    }
+    public void Respawn()
+    {
+        enemyAnimator.ResetTrigger("Dead");
+        isDead = false;
+        gameObject.SetActive(true);
+        this.transform.position = spawnPoint;
+        this.health = maxHealth;
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

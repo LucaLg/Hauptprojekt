@@ -9,6 +9,7 @@ TagManager:
   - WorldCamera
   - EnemyAttackPoint
   - PlayerAttackPoint
+  - CheckPoint
   layers:
   - Default
   - TransparentFX
