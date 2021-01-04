@@ -172,7 +172,7 @@ public class PlayerController : MonoBehaviourPun
         float healthPercentage = health / maxHealth;
         float staminaPercentage = stamina / maxStamina;
         float xpPercentage = xp / xpToNextLevel;
-        Debug.Log(healthPercentage + " | " + staminaPercentage + " | " + xpPercentage);
+       // Debug.Log(healthPercentage + " | " + staminaPercentage + " | " + xpPercentage);
         healthBar.localScale = new Vector3(healthPercentage, 1, 1);
         healthBarOverHead.localScale = new Vector3(healthPercentage, 1, 1);
         staminaBar.localScale = new Vector3(staminaPercentage, 1, 1);

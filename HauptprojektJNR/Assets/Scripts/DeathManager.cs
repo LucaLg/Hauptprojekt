@@ -26,10 +26,11 @@ public class DeathManager :MonoBehaviourPunCallbacks
 
     void Update()
     {
-        
-       
+        updatePlayers();
+        Debug.Log("SpielerListe" + PhotonNetwork.PlayerList.Length);
+        Debug.Log("Players Lange" + players.Length);
         // Wenn im Spiel nur ein Spieler existiert und dieser Stirbt wird direkt die ReloadSceneFromLastCheckPoint Methode ausgefuehrt
-        if( players.Length == 1 && player1.dead)
+        if ( players.Length == 1 && player1.dead)
         {
             photonView.RPC("RespawnLastCheckPoint",RpcTarget.AllBuffered);
         }
@@ -123,13 +124,19 @@ public class DeathManager :MonoBehaviourPunCallbacks
             playerDead.transform.position = playerDead.GetComponent<PlayerController>().lastCheckpoint;
         }
     }
+    /*public override void OnCreatedRoom()
+    {
+        updatePlayers();
+        Debug.LogError("Raum geoffnet");
+    }
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         updatePlayers();
+        Debug.LogError("PlayerJoined");
     }
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         updatePlayers();
-    }
+    }*/
 
 }
