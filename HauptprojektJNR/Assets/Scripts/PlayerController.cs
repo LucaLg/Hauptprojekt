@@ -46,6 +46,10 @@ public class PlayerController : MonoBehaviourPun
     private bool blocked = false;
     public bool dead = false;
     public Vector3 lastCheckpoint;
+    public int doubleJump =2;
+    //BetterJump
+    public float fallMultiplier = 2.5f;
+    public float lowJumpMultiplier = 2f;
     void Start()
     {   
         photonView = GetComponent<PhotonView>();
@@ -73,8 +77,13 @@ public class PlayerController : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
+        
         if (!photonView.IsMine) return;
-
+        if (dead)
+        {
+            
+            return;
+        }
         //Menu
 
         if (Input.GetKeyDown("tab"))
@@ -83,10 +92,10 @@ public class PlayerController : MonoBehaviourPun
             menuCanvas.SetActive(menuOpen);
 
         }
-
+        
         //Movement
         movement.x = Input.GetAxisRaw("Horizontal");
-        if (Input.GetAxis("Horizontal") != 0) {
+        if (Input.GetAxis("Horizontal") != 0 ) {
             playerRb.velocity = new Vector3(movement.x * moveSpeed, playerRb.velocity.y, 0);
             animPlayer.SetBool("isMoving", true);
         }
@@ -95,11 +104,33 @@ public class PlayerController : MonoBehaviourPun
             animPlayer.SetBool("isMoving", false);
         }
         bool grounded = isGrounded();
-        if (Input.GetKeyDown("space") && grounded && stamina >= 3) {
-            stamina -= 3;
-            animPlayer.SetTrigger("Jump");
-            playerRb.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
-            playerRb.velocity = Vector2.up * jumpForce;
+        if (grounded)
+        {
+            doubleJump = 2;
+            animPlayer.SetInteger("DoubleJump", doubleJump);
+        }
+        //BetterJump
+        if(playerRb.velocity.y < 0)
+        {
+            playerRb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+        }
+        if (Input.GetKeyDown("space")  && stamina >= 3 && (doubleJump >0 || grounded)) {
+            doubleJump--;
+            animPlayer.SetInteger("DoubleJump", doubleJump);
+            if (doubleJump == 1)
+            {
+                stamina -= 3;
+                animPlayer.SetTrigger("Jump");
+                playerRb.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
+                playerRb.velocity = Vector2.up * jumpForce;
+            }
+            else
+            {
+                stamina -= 3;
+                
+                playerRb.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
+                playerRb.velocity = Vector2.up * (jumpForce-2f);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.A))
@@ -117,6 +148,8 @@ public class PlayerController : MonoBehaviourPun
             stamina -= 2;
             photonView.RPC("Attack", RpcTarget.AllBuffered);
         }
+       
+        
 
         //Update Health, XP, Stamina (Ergibt manchmal 0 - Warum?? Integer Division?)
 
@@ -148,9 +181,13 @@ public class PlayerController : MonoBehaviourPun
         if (health <= 0) { 
         photonView.RPC("Die", RpcTarget.AllBuffered);
         }
-
+       
     }
-
+    public void SetCamera(Camera cam)
+    {
+        this.playerCam.SetActive(false);
+        cam.enabled = true;
+    }
     private void LevelUp()
     {
         level++;
@@ -163,6 +200,7 @@ public class PlayerController : MonoBehaviourPun
     }
     private bool isGrounded()
     {
+        
         RaycastHit2D raycastHit2D =  Physics2D.BoxCast(playerBox.bounds.center, playerBox.bounds.size, 0f, Vector2.down,0.1f, platformLayer);
         bool grounded = raycastHit2D.collider != null;
         animPlayer.SetBool("Grounded", grounded);
@@ -199,16 +237,18 @@ public class PlayerController : MonoBehaviourPun
             //enemy.GetComponentInParent<EnemyController>().health--;
         }
     }
+   
     [PunRPC]
     void Die()
     {
         //Resette Health auf MaxHealth
         //Resette XP
-        gameObject.SetActive(false);
+
         
         dead = true;
         xp = 0;
         health = maxHealth;
+        
     }
    
     public void IsAttacked(float dmg)
@@ -233,5 +273,8 @@ public class PlayerController : MonoBehaviourPun
         playerCam.transform.localScale = new Vector3(1, 1, 1);
         //spriteR.flipX = false;
     }
-
+    public Vector3 CameraPosition()
+    {
+        return playerCam.transform.position;
+    }
 }
