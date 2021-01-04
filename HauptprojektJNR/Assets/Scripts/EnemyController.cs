@@ -105,23 +105,26 @@ public class EnemyController : MonoBehaviour,IPunObservable
 
     void findAndAttackTarget()
     {
-        
+        PlayerController playerTarget = null;
         bool targetFound = false;
         float distanceToStop = attackRange ;
         Vector3 target = transform.position;
         RaycastHit2D targetRight = Physics2D.Raycast(transform.position, Vector3.right,5f,playerLayers);
         RaycastHit2D targetLeft = Physics2D.Raycast(transform.position, Vector3.left, 5f, playerLayers);
+       
         if(targetLeft.collider != null && targetRight.collider != null)
         {
             if(targetRight.distance >= targetLeft.distance)
             {
-                 
+                playerTarget = targetLeft.collider.GetComponentInParent<PlayerController>();
                  target = targetLeft.transform.position;
                  photonView.RPC("FlipTrue", RpcTarget.AllBuffered);
-                targetFound = true;
+                 targetFound = true;
+                
             }
             else
             {
+                playerTarget = targetRight.collider.GetComponentInParent<PlayerController>();
                 target = targetRight.transform.position;
                 photonView.RPC("FlipFalse", RpcTarget.AllBuffered);
                 targetFound = true;
@@ -129,14 +132,14 @@ public class EnemyController : MonoBehaviour,IPunObservable
         }
         if(targetLeft.collider != null)
         {
-
-             target= targetLeft.transform.position;
+            playerTarget = targetLeft.collider.GetComponentInParent<PlayerController>();
+            target = targetLeft.transform.position;
             photonView.RPC("FlipTrue", RpcTarget.AllBuffered);
             targetFound = true;
         }
         
         if(targetRight.collider != null) {
-            
+            playerTarget = targetRight.collider.GetComponentInParent<PlayerController>();
             target = targetRight.transform.position;
             photonView.RPC("FlipFalse", RpcTarget.AllBuffered);
             targetFound = true;
@@ -145,14 +148,19 @@ public class EnemyController : MonoBehaviour,IPunObservable
             enemyAnimator.SetInteger("AnimState", 1);
             transform.position = Vector3.MoveTowards(transform.position, target, Time.deltaTime * enemyMoveSpeed);
         }
-        if (targetFound && Vector3.Distance(transform.position, target) <= distanceToStop+0.5f) {
-            //Attack
-            photonView.RPC("Attack", RpcTarget.AllBuffered);
-            
-        }
-        if (!targetFound)
+        if (playerTarget != null)
         {
-            enemyAnimator.SetInteger("AnimState", 0);
+            if (!playerTarget.dead && targetFound && Vector3.Distance(transform.position, target) <= distanceToStop + 0.5f)
+            {
+                //Attack
+
+                photonView.RPC("Attack", RpcTarget.AllBuffered);
+
+            }
+            if (!targetFound)
+            {
+                enemyAnimator.SetInteger("AnimState", 0);
+            }
         }
     }
     [PunRPC]
@@ -171,7 +179,10 @@ public class EnemyController : MonoBehaviour,IPunObservable
             foreach (CircleCollider2D enemy in hitEnemies)
             {
                 //Damage wird nicht von anderer Klasse manipuliert
-                enemy.GetComponent<PlayerController>().IsAttacked(damage);
+                if (!enemy.GetComponent<PlayerController>().dead)
+                {
+                    enemy.GetComponent<PlayerController>().IsAttacked(damage);
+                }
                 //enemy.GetComponentInParent<EnemyController>().health--;
             }
             

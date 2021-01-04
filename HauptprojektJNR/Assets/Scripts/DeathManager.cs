@@ -106,7 +106,7 @@ public class DeathManager :MonoBehaviourPunCallbacks
         
         foreach (GameObject player in players)
         {
-            player.GetComponent<PlayerController>().lastCheckpoint = latestCheckpoint;
+            latestCheckpoint = player.GetComponent<PlayerController>().lastCheckpoint;
             player.GetComponent<PlayerController>().Respawn();
             player.transform.position= player.GetComponent<PlayerController>().lastCheckpoint;
         }
