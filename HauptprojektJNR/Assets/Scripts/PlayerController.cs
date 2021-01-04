@@ -246,9 +246,14 @@ public class PlayerController : MonoBehaviourPun
 
         
         dead = true;
+       
+        
+    }
+    public void Respawn()
+    {
+        dead = false;
         xp = 0;
         health = maxHealth;
-        
     }
    
     public void IsAttacked(float dmg)
