@@ -52,14 +52,14 @@ public class DeathManager :MonoBehaviourPunCallbacks
             if(player1.dead || player2.dead)
             {
                 if (player1.dead) {
-                    Vector3 offset = new Vector3(0, 0, 3);
-                    player1Cam.transform.position = players[1].transform.position + offset;
+                    /*Vector3 offset = new Vector3(0, 0, 3);
+                    player1Cam.transform.position = players[1].transform.position + offset;*/
                     SpawnPlayerAtNextCheckPoint(player1,player2);
                 }
                 if (player2.dead)
                 {
-                    Vector3 offset = new Vector3(0, 0, 3);
-                    player2Cam.transform.position = players[0].transform.position + offset;
+                    /*Vector3 offset = new Vector3(0, 0, 3);
+                    player2Cam.transform.position = players[0].transform.position + offset;*/
                     SpawnPlayerAtNextCheckPoint(player2,player1);
                 }
                
@@ -74,10 +74,10 @@ public class DeathManager :MonoBehaviourPunCallbacks
         if (players.Length > 1)
         {
             player1 = players[0].GetComponent<PlayerController>();
-            player1Cam = players[0].GetComponentInChildren<Camera>();
+            //player1Cam = players[0].GetComponentInChildren<Camera>();
   
             player2 = players[1].GetComponent<PlayerController>();
-            player2Cam = players[1].GetComponentInChildren<Camera>();
+            //player2Cam = players[1].GetComponentInChildren<Camera>();
         }
         else if (players.Length == 1)
         {
