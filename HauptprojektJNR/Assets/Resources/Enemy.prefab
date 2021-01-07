@@ -536,6 +536,7 @@ MonoBehaviour:
   worldCamera: {fileID: 0}
   healthbar: {fileID: 271039291}
   attackPoint: {fileID: 0}
+  dm: {fileID: 0}
   attackRate: 0.5
   maxHealth: 4
   health: 4
@@ -543,6 +544,7 @@ MonoBehaviour:
   hit: 0
   attackRange: 1.5
   damage: 2
+  xpOnDeath: 50
 --- !u!114 &3221881251541401735
 MonoBehaviour:
   m_ObjectHideFlags: 0

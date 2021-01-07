@@ -62,6 +62,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private float manaDrain;
     private float heal;
     private float rage;
+    public float damageModifier = 1f;
     private int healLevel = 1;
     private int rageLevel = 1;
     private int drainManaLevel = 1;
@@ -91,7 +92,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             playerCam.SetActive(true);
         }
         heal = healLevel * 0.05f;
-        rage = rageLevel * 0.05f;
+        rage = rageLevel * 3.05f;
         manaDrain = drainManaLevel * 0.05f;
         lifeDrain = drainLifeLevel * 0.05f;
     }
@@ -162,7 +163,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             addMana(-3);
             photonView.RPC("CastHeal", RpcTarget.AllBuffered);
         }
-
+        if(Input.GetKeyDown("c") && mana > 3)
+        {
+            addMana(-3);
+            photonView.RPC("CastRage", RpcTarget.AllBuffered);
+        }
         if (Input.GetKeyDown(KeyCode.A))
         {
             photonView.RPC("FlipTrue", RpcTarget.AllBuffered);
@@ -185,11 +190,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         addStamina(staminaRegeneration * Time.deltaTime);
 
-        if(xp >= xpToNextLevel)
-        {
-            LevelUp();
-
-        }
         healthPercentage = health / maxHealth;
         float staminaPercentage = stamina / maxStamina;
         float xpPercentage = xp / xpToNextLevel;
@@ -221,6 +221,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         txtAttrPoints.text = "Points: " + attributePoints;
         txtSkillPoints.text = "Points: " + skillPoints;
         txtLevel.text = "Lvl " + level;
+        if(xp >= xpToNextLevel)
+        {
+            LevelUp();
+        }
 
     }
     private bool isGrounded()
@@ -315,12 +319,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     }
 
     [PunRPC]
-    public void updateBars(float phealthPercentage)
-    {
-        
-        healthBarOverHead.localScale = new Vector3(phealthPercentage, 1, 1);
-    }
-    [PunRPC]
     public void addHealth(float pHealth)
     {
         health += pHealth;
@@ -357,6 +355,15 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
     [PunRPC]
+    private void addXP(float amount)
+    {
+        xp += amount;
+        if(xp >= xpToNextLevel)
+        {
+            LevelUp();
+        }
+    }
+    [PunRPC]
     private void CastHeal()
     {
         photonView.RPC("addHealth", RpcTarget.AllBuffered, maxHealth*heal);
@@ -368,6 +375,27 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [PunRPC]
     private void CastRage()
     {
+        photonView.RPC("giveRageBuff", RpcTarget.AllBuffered, rage);
+        if (otherPlayer != null)
+        {
+            otherPlayer.RPC("giveRageBuff", RpcTarget.AllBuffered, rage);
+        }
+    }
+    [PunRPC]
+    private void giveRageBuff(float buff)
+    {
+        IEnumerator coroutine = RageBuff(buff);
+        StartCoroutine(coroutine);
+    }
+    private IEnumerator RageBuff(float buff)
+    {
+        Debug.Log(damageModifier);
+        damageModifier += buff;
+        Debug.Log(damageModifier);
+        yield return new WaitForSeconds(5f);
+        damageModifier -= buff;
+        Debug.Log(damageModifier);
+
 
     }
     [PunRPC]
@@ -380,9 +408,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         foreach (BoxCollider2D enemy in hitEnemies)
         {
             //Damage wird nicht von anderer Klasse manipuliert
-            enemy.GetComponent<EnemyController>().IsAttacked(damage);
-            addHealth(damage * lifeDrain);
-            addMana(damage * manaDrain);
+            enemy.GetComponent<EnemyController>().IsAttacked(damage * damageModifier);
+            addHealth(damage * damageModifier * lifeDrain);
+            addMana(damage * damageModifier * manaDrain);
 
             //enemy.GetComponentInParent<EnemyController>().health--;
         }

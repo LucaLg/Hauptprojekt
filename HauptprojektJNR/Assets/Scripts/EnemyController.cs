@@ -20,6 +20,7 @@ public class EnemyController : MonoBehaviour,IPunObservable
     private Vector3 offset = new Vector3(-0.2f, 0.8f, 0);
     private float[] healthArray;
     public Transform attackPoint;
+    public GameObject dm;
    
     //Attribute  
     public float attackRate;
@@ -33,10 +34,12 @@ public class EnemyController : MonoBehaviour,IPunObservable
     public float attackRange;
     public float damage;
     private Vector3 spawnPoint;
+    public float xpOnDeath;
     void Start()
     {
         //SpawnPoint zum Respawn setzten
         spawnPoint = transform.position;
+        dm = GameObject.Find("DeathManager");
         //Suche AttackPoint
         foreach(Transform child in transform)
         {
@@ -207,9 +210,10 @@ public class EnemyController : MonoBehaviour,IPunObservable
    [PunRPC]
     void Die()
     {
-        if (health ==0)
+        if (health <= 0)
         {
             isDead = true;
+            dm.GetComponent<DeathManager>().photonView.RPC("GivePlayersXP", RpcTarget.AllBuffered, xpOnDeath);
         }
     }
     [PunRPC]

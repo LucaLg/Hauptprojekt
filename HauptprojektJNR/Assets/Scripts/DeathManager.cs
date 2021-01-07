@@ -124,6 +124,22 @@ public class DeathManager :MonoBehaviourPunCallbacks
             playerDead.transform.position = playerDead.GetComponent<PlayerController>().lastCheckpoint;
         }
     }
+
+    [PunRPC]
+    private void GivePlayersXP(float amount)
+    {
+        if(player1 != null && player2 != null)
+        {   
+            player1.photonView.RPC("addXP", RpcTarget.AllBuffered, amount);
+            player2.photonView.RPC("addXP", RpcTarget.AllBuffered, amount);
+
+        }
+        else if(player2 == null && player1 != null)
+        {
+            player1.photonView.RPC("addXP", RpcTarget.AllBuffered, amount);
+        }
+       
+    }
     /*public override void OnCreatedRoom()
     {
         updatePlayers();
