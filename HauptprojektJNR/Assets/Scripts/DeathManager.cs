@@ -27,8 +27,6 @@ public class DeathManager :MonoBehaviourPunCallbacks
     void Update()
     {
         updatePlayers();
-        Debug.Log("SpielerListe" + PhotonNetwork.PlayerList.Length);
-        Debug.Log("Players Lange" + players.Length);
         // Wenn im Spiel nur ein Spieler existiert und dieser Stirbt wird direkt die ReloadSceneFromLastCheckPoint Methode ausgefuehrt
         if ( players.Length == 1 && player1.dead)
         {
@@ -79,6 +77,8 @@ public class DeathManager :MonoBehaviourPunCallbacks
   
             player2 = players[1].GetComponent<PlayerController>();
             //player2Cam = players[1].GetComponentInChildren<Camera>();
+            player1.setOtherPlayer(player2.photonView);
+            player2.setOtherPlayer(player1.photonView);
         }
         else if (players.Length == 1)
         {

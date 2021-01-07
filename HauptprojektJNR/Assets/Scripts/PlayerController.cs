@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 
-public class PlayerController : MonoBehaviourPun
+public class PlayerController : MonoBehaviourPun, IPunObservable
 {
     [SerializeField] private LayerMask platformLayer;
     public LayerMask enemyLayers;
@@ -51,9 +51,13 @@ public class PlayerController : MonoBehaviourPun
     public bool dead = false;
     public Vector3 lastCheckpoint;
     public int doubleJump =2;
+    public float healthPercentage;
+    public PhotonView otherPlayer;
+
     //BetterJump
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
+
     private float lifeDrain;
     private float manaDrain;
     private float heal;
@@ -64,7 +68,7 @@ public class PlayerController : MonoBehaviourPun
     private int drainLifeLevel = 1;
     
     void Start()
-    {   
+    {
         photonView = GetComponent<PhotonView>();
         if (!photonView.IsMine) return;
         health = maxHealth;
@@ -95,8 +99,11 @@ public class PlayerController : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        
-        if (!photonView.IsMine) return;
+
+        if (!photonView.IsMine)
+        {
+            return;
+        }
         if (dead)
         {
             
@@ -150,6 +157,11 @@ public class PlayerController : MonoBehaviourPun
                 playerRb.velocity = Vector2.up * (jumpForce-2f);
             }
         }
+        if(Input.GetKeyDown("v") && mana > 3)
+        {
+            addMana(-3);
+            photonView.RPC("CastHeal", RpcTarget.AllBuffered);
+        }
 
         if (Input.GetKeyDown(KeyCode.A))
         {
@@ -171,14 +183,14 @@ public class PlayerController : MonoBehaviourPun
 
         //Update Health, XP, Stamina (Ergibt manchmal 0 - Warum?? Integer Division?)
 
-        giveStamina(staminaRegeneration * Time.deltaTime);
+        addStamina(staminaRegeneration * Time.deltaTime);
 
         if(xp >= xpToNextLevel)
         {
             LevelUp();
 
         }
-        float healthPercentage = health / maxHealth;
+        healthPercentage = health / maxHealth;
         float staminaPercentage = stamina / maxStamina;
         float xpPercentage = xp / xpToNextLevel;
         float manaPercentage = mana / maxMana;
@@ -187,7 +199,7 @@ public class PlayerController : MonoBehaviourPun
         staminaBar.localScale = new Vector3(staminaPercentage, 1, 1);
         xpBar.localScale = new Vector3(xpPercentage, 1, 1);
         manaBar.localScale = new Vector3(manaPercentage, 1, 1);
-        Debug.Log(skillPoints + " | " + healLevel);
+       // photonView.RPC("updateBars", RpcTarget.AllBuffered, healthPercentage);
 
         if (health <= 0) { 
         photonView.RPC("Die", RpcTarget.AllBuffered);
@@ -226,7 +238,7 @@ public class PlayerController : MonoBehaviourPun
         {
             attributePoints -= 1;
             maxHealth += 2f;
-            giveHealth(2f);
+            addHealth(2f);
         }
         
     }
@@ -236,7 +248,7 @@ public class PlayerController : MonoBehaviourPun
         {
             attributePoints -= 1;
             maxStamina += 1f;
-            giveStamina(1f);
+            addStamina(1f);
 
         }
         
@@ -301,28 +313,62 @@ public class PlayerController : MonoBehaviourPun
         }
         
     }
-    public void giveHealth(float pHealth)
+
+    [PunRPC]
+    public void updateBars(float phealthPercentage)
+    {
+        
+        healthBarOverHead.localScale = new Vector3(phealthPercentage, 1, 1);
+    }
+    [PunRPC]
+    public void addHealth(float pHealth)
     {
         health += pHealth;
         if (health > maxHealth){
             health = maxHealth;
         }
+        if(health < 0)
+        {
+            health = 0;
+        }
     }
-    public void giveStamina(float pStamina)
+    public void addStamina(float pStamina)
     {
         stamina += pStamina;
         if(stamina > maxStamina)
         {
             stamina = maxStamina;
         }
+        if (stamina < 0)
+        {
+            stamina = 0;
+        }
     }
-    public void giveMana(float pMana)
+    public void addMana(float pMana)
     {
         mana += pMana;
         if(mana > maxMana)
         {
             mana = maxMana;
         }
+        if (mana < 0)
+        {
+            mana = 0;
+        }
+    }
+    [PunRPC]
+    private void CastHeal()
+    {
+        photonView.RPC("addHealth", RpcTarget.AllBuffered, maxHealth*heal);
+        if(otherPlayer != null)
+        {
+            otherPlayer.RPC("addHealth", RpcTarget.AllBuffered, maxHealth * heal);
+        }
+    }
+    [PunRPC]
+    private void CastRage()
+    {
+
     }
     [PunRPC]
     private void Attack()
@@ -335,8 +381,8 @@ public class PlayerController : MonoBehaviourPun
         {
             //Damage wird nicht von anderer Klasse manipuliert
             enemy.GetComponent<EnemyController>().IsAttacked(damage);
-            giveHealth(damage * lifeDrain);
-            giveMana(damage * manaDrain);
+            addHealth(damage * lifeDrain);
+            addMana(damage * manaDrain);
 
             //enemy.GetComponentInParent<EnemyController>().health--;
         }
@@ -364,7 +410,8 @@ public class PlayerController : MonoBehaviourPun
     {
         if (!blocked)
         {
-            health = health - dmg;
+            //photonView.RPC("addHealth", RpcTarget.AllBuffered, -dmg);
+            addHealth(-dmg);
         }
     }
     [PunRPC]
@@ -385,5 +432,20 @@ public class PlayerController : MonoBehaviourPun
     public Vector3 CameraPosition()
     {
         return playerCam.transform.position;
+    }
+    public void setOtherPlayer(PhotonView other)
+    {
+        otherPlayer = other;
+    }
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(health);
+        }
+        else
+        {
+            health = (float)stream.ReceiveNext();
+        }
     }
 }
