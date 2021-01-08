@@ -69,7 +69,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private int drainLifeLevel = 1;
     
     void Start()
-    {
+    {   
+        
         photonView = GetComponent<PhotonView>();
         if (!photonView.IsMine) return;
         health = maxHealth;
@@ -199,7 +200,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         staminaBar.localScale = new Vector3(staminaPercentage, 1, 1);
         xpBar.localScale = new Vector3(xpPercentage, 1, 1);
         manaBar.localScale = new Vector3(manaPercentage, 1, 1);
-       // photonView.RPC("updateBars", RpcTarget.AllBuffered, healthPercentage);
+       //Debug.Log(skillPoints + " | " + healLevel);
 
         if (health <= 0) { 
         photonView.RPC("Die", RpcTarget.AllBuffered);
@@ -429,6 +430,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     }
     public void Respawn()
     {
+        if (photonView.IsMine)
+        {
+            playerCam.SetActive(true);
+        }
         dead = false;
         xp = 0;
         health = maxHealth;

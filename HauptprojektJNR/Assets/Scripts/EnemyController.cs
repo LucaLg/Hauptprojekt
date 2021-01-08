@@ -147,9 +147,13 @@ public class EnemyController : MonoBehaviour,IPunObservable
             photonView.RPC("FlipFalse", RpcTarget.AllBuffered);
             targetFound = true;
         }
-        if (Vector3.Distance(transform.position, target) > distanceToStop) {
+        if (targetFound && Vector3.Distance(transform.position, target) > distanceToStop) {
             enemyAnimator.SetInteger("AnimState", 1);
             transform.position = Vector3.MoveTowards(transform.position, target, Time.deltaTime * enemyMoveSpeed);
+        }
+        else
+        {
+            enemyAnimator.SetInteger("AnimState", 0);
         }
         if (playerTarget != null)
         {

@@ -11,7 +11,7 @@ TagManager:
   - PlayerAttackPoint
   - CheckPoint
   - PlayerCamera
-  - DeathManager
+  - LobbyManager
   layers:
   - Default
   - TransparentFX
