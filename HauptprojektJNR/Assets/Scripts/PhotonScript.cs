@@ -57,11 +57,14 @@ public class PhotonScript : MonoBehaviourPunCallbacks
         {
             Player1 = Players[0].GetComponent<PlayerController>();
             Player2 = Players[1].GetComponent<PlayerController>();
+            Player1.setOtherPlayer(Player2.photonView);
+            Player2.setOtherPlayer(Player1.photonView);
         }
         else if (Players.Length == 1)
         {
             Player1 = Players[0].GetComponent<PlayerController>();
         }
+
     }
     public PlayerController GetPlayer(int PlayerNumber)
     {

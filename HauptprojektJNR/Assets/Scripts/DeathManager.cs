@@ -87,20 +87,7 @@ public class DeathManager :MonoBehaviourPunCallbacks
         }
 
     }
-    /*void updatePlayers()
-    {
-        players = GameObject.FindGameObjectsWithTag("Player");
-
-        if (players.Length > 1)
-        {
-            player1 = players[0].GetComponent<PlayerController>();
-            player2 = players[1].GetComponent<PlayerController>();    
-        }
-        else if (players.Length == 1)
-        {
-            player1 = players[0].GetComponent<PlayerController>();
-        }
-    }*/
+  
     /*
      * Wenn beide Spieler Tod sind wird die Szene neu geladen um die Gegner zu Respawnen
      * und die Spieler an den letzten CheckPoint platziert
@@ -130,44 +117,14 @@ public class DeathManager :MonoBehaviourPunCallbacks
     /*
      * Wenn ein Spieler stirbt und der andere den naechsten Checkpoint erreicht wird der Tode spieler Respawnt
      */
-    void SpawnPlayerAtNextCheckPoint(PlayerController playerDead,PlayerController playerAlive)
+    void SpawnPlayerAtNextCheckPoint(PlayerController playerDead, PlayerController playerAlive)
     {
-        if(playerAlive.lastCheckpoint.x > playerDead.lastCheckpoint.x)
+        if (playerAlive.lastCheckpoint.x > playerDead.lastCheckpoint.x)
         {
             playerDead.GetComponent<PlayerController>().lastCheckpoint = playerAlive.lastCheckpoint;
             playerDead.GetComponent<PlayerController>().Respawn();
             playerDead.transform.position = playerDead.GetComponent<PlayerController>().lastCheckpoint;
         }
     }
-
-    [PunRPC]
-    private void GivePlayersXP(float amount)
-    {
-        if(player1 != null && player2 != null)
-        {   
-            player1.photonView.RPC("addXP", RpcTarget.AllBuffered, amount);
-            player2.photonView.RPC("addXP", RpcTarget.AllBuffered, amount);
-
-        }
-        else if(player2 == null && player1 != null)
-        {
-            player1.photonView.RPC("addXP", RpcTarget.AllBuffered, amount);
-        }
-       
-    }
-    /*public override void OnCreatedRoom()
-    {
-        updatePlayers();
-        Debug.LogError("Raum geoffnet");
-    }
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        updatePlayers();
-        Debug.LogError("PlayerJoined");
-    }
-    public override void OnPlayerLeftRoom(Player otherPlayer)
-    {
-        updatePlayers();
-    }*/
 
 }

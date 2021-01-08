@@ -20,7 +20,7 @@ public class EnemyController : MonoBehaviour,IPunObservable
     private Vector3 offset = new Vector3(-0.2f, 0.8f, 0);
     private float[] healthArray;
     public Transform attackPoint;
-    public GameObject dm;
+    public GameObject Photon;
    
     //Attribute  
     public float attackRate;
@@ -39,7 +39,7 @@ public class EnemyController : MonoBehaviour,IPunObservable
     {
         //SpawnPoint zum Respawn setzten
         spawnPoint = transform.position;
-        dm = GameObject.Find("DeathManager");
+        Photon = GameObject.Find("Photon");
         //Suche AttackPoint
         foreach(Transform child in transform)
         {
@@ -217,7 +217,7 @@ public class EnemyController : MonoBehaviour,IPunObservable
         if (health <= 0)
         {
             isDead = true;
-            dm.GetComponent<DeathManager>().photonView.RPC("GivePlayersXP", RpcTarget.AllBuffered, xpOnDeath);
+            Photon.GetComponent<GameLogic>().GameLogicPhotonView.RPC("GivePlayersXP", RpcTarget.AllBuffered, xpOnDeath);
         }
     }
     [PunRPC]

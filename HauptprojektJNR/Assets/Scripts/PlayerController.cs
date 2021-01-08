@@ -358,6 +358,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [PunRPC]
     private void addXP(float amount)
     {
+        Debug.LogWarning("Xp gegeben");
         xp += amount;
         if(xp >= xpToNextLevel)
         {
