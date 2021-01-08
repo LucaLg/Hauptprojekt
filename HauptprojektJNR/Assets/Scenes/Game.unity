@@ -215,6 +215,7 @@ GameObject:
   - component: {fileID: 155860272}
   - component: {fileID: 155860271}
   - component: {fileID: 155860273}
+  - component: {fileID: 155860274}
   m_Layer: 0
   m_Name: Photon
   m_TagString: LobbyManager
@@ -275,6 +276,22 @@ MonoBehaviour:
   viewIdField: 6
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &155860274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155860270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f94e2cb766aa664409aa31c6c62673ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LobbyScript: {fileID: 155860271}
+  Player1: {fileID: 0}
+  Player2: {fileID: 0}
+  GameLogicPhotonView: {fileID: 155860273}
 --- !u!1 &163962900
 GameObject:
   m_ObjectHideFlags: 0
