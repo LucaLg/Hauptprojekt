@@ -1,12 +1,14 @@
 # Hauptprojekt
 Hauptprojekt Spiel im Fachprojekt
-- [ ] Player Jump verbessern(DoubleJump)
-- [ ] Player Level System
-- [ ] Gegner Attack(DMG an Spieler)
-- [ ] Gegner Loot
+- [ ] Speichern Level CheckPoint Health Mana 
+- [ ] Neue Fahigkeiten Dash ,Block, BodenRolle , Mario Jump 
+- [ ] Angriff 2 und 3 hzfg neue Animation ? oder mehr Schaden bei Kombo
+- [ ] AttackSpeed Clientseitig hinzufuegen -> Attack Speed LevelUp
 - [ ] Level aufbauen
-- [ ] Player Attack Animation verbessern
-- [ ] Checkpoints
+- [ ] Neue GegnerTypen 
+- [ ] Boss Gegner mit BossRaum
 - [ ] Boss
 - [ ] Player Die 
-- [ ] Respawn an Checkpoint
+- [ ] Flug Animation verbessern
+- [ ] Spieler Namen oder Farben unterschied
+- [ ] Andere Sprung Obstacels (Boden mit Bounciness,oder Slow Boden)
