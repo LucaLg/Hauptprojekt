@@ -74,7 +74,7 @@ public class EnemyController : MonoBehaviour,IPunObservable
         {
             return;
         }
-        photonView.RPC("Die", RpcTarget.All);
+        photonView.RPC("Die", RpcTarget.AllBuffered);
         photonView.RPC("SetHealth", RpcTarget.AllBuffered, healthArray);
         if (isDead)
         {
@@ -147,7 +147,7 @@ public class EnemyController : MonoBehaviour,IPunObservable
             photonView.RPC("FlipFalse", RpcTarget.AllBuffered);
             targetFound = true;
         }
-        if (targetFound && Vector3.Distance(transform.position, target) > distanceToStop) {
+        if (targetFound&& !playerTarget.dead && Vector3.Distance(transform.position, target) > distanceToStop) {
             enemyAnimator.SetInteger("AnimState", 1);
             transform.position = Vector3.MoveTowards(transform.position, target, Time.deltaTime * enemyMoveSpeed);
         }
@@ -177,8 +177,8 @@ public class EnemyController : MonoBehaviour,IPunObservable
         if (Time.time >= nextAttackTime)
         {
                
-            enemyAnimator.SetInteger("AnimState", 2);
-           
+            //enemyAnimator.SetInteger("AnimState", 2);
+            enemyAnimator.SetTrigger("Attack");
            
             //Detect Enemies in range of Attack
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, playerLayers);

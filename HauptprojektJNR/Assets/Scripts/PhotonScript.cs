@@ -28,7 +28,7 @@ public class PhotonScript : MonoBehaviourPunCallbacks
         //float x = Random.Range(-3, 5);
         PhotonNetwork.Instantiate("Player", spawnPoint.position, Quaternion.identity);
         Debug.LogAssertion("RaumJoined");
-        LobbyView.RPC("UpdatePlayers", RpcTarget.All);
+        LobbyView.RPC("UpdatePlayers", RpcTarget.AllBuffered);
         //PhotonNetwork.Instantiate("Enemy", new Vector3(x, -1.57f, 0), Quaternion.identity);
     }
     // Update is called once per frame
@@ -45,7 +45,7 @@ public class PhotonScript : MonoBehaviourPunCallbacks
 
     {
         Debug.LogAssertion("On Player enter");
-        LobbyView.RPC("UpdatePlayers", RpcTarget.All);
+        LobbyView.RPC("UpdatePlayers", RpcTarget.AllBuffered);
     }
     [PunRPC]
     void UpdatePlayers()

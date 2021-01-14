@@ -4946,6 +4946,16 @@ PrefabInstance:
       propertyPath: txtLevel
       value: 
       objectReference: {fileID: 7764967428731362099}
+    - target: {fileID: 713343940645459300, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: AttackSpeed
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 713343940645459300, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: healthBarOverHead
+      value: 
+      objectReference: {fileID: 7677035002326903798}
     - target: {fileID: 7032596770027271041, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}
       propertyPath: m_LocalPosition.x

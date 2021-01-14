@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     SpriteRenderer spriteR;
     private Collider2D playerBox;
     public Transform attackPoint;
-    private Transform healthBarOverHead;
+    public Transform healthBarOverHead;
     private Transform healthBar;
     private Transform staminaBar;
     private Transform manaBar;
@@ -67,7 +67,15 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private int rageLevel = 1;
     private int drainManaLevel = 1;
     private int drainLifeLevel = 1;
-    
+    //AttackSpeed
+    public float AttackSpeed;
+    private float nextAttackTime = 0f;
+    private float AttackAnimSpeedMultiplier = 1;
+    private void Awake()
+    {
+        animPlayer = GetComponent<Animator>();
+        animPlayer.SetBool("Grounded", true);
+    }
     void Start()
     {   
         
@@ -75,13 +83,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if (!photonView.IsMine) return;
         health = maxHealth;
         stamina = maxStamina;
-        healthBarOverHead = transform.Find("HealthBarOverHead/Bar");
+       //healthBarOverHead = transform.Find("HealthBarOverHead/Bar");
         healthBar = transform.Find("Camera/HealthBar/Bar");
         staminaBar = transform.Find("Camera/StaminaBar/Bar");
         manaBar = transform.Find("Camera/ManaBar/Bar");
         xpBar = transform.Find("Camera/XpBar/Bar");
-        animPlayer = GetComponent<Animator>();
-        animPlayer.SetBool("Grounded", true);
+       
         playerRb = GetComponent<Rigidbody2D>();
         
         spriteR = GetComponent<SpriteRenderer>();
@@ -91,6 +98,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if (photonView.IsMine)
         {
             playerCam.SetActive(true);
+            
         }
         heal = healLevel * 0.05f;
         rage = rageLevel * 3.05f;
@@ -176,12 +184,13 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         {
             photonView.RPC("FlipFalse", RpcTarget.AllBuffered);
         }
-        if (Input.GetKeyDown("b") && stamina >= 2)
+        if (Time.time >= nextAttackTime && Input.GetKeyDown("b") && stamina >= 2)
         {
             //Play Animation
             animPlayer.SetTrigger("Attack");
             stamina -= 2;
             photonView.RPC("Attack", RpcTarget.AllBuffered);
+            nextAttackTime = Time.time + AttackSpeed;
         }
        
         
@@ -190,12 +199,13 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         addStamina(staminaRegeneration * Time.deltaTime);
 
-        healthPercentage = health / maxHealth;
+       // healthPercentage = health / maxHealth;
+        photonView.RPC("CalcHPerc", RpcTarget.AllBuffered, health, maxHealth);
         float staminaPercentage = stamina / maxStamina;
         float xpPercentage = xp / xpToNextLevel;
         float manaPercentage = mana / maxMana;
         healthBar.localScale = new Vector3(healthPercentage, 1, 1);
-        healthBarOverHead.localScale = new Vector3(healthPercentage, 1, 1);
+        
         staminaBar.localScale = new Vector3(staminaPercentage, 1, 1);
         xpBar.localScale = new Vector3(xpPercentage, 1, 1);
         manaBar.localScale = new Vector3(manaPercentage, 1, 1);
@@ -204,8 +214,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if (health <= 0) { 
         photonView.RPC("Die", RpcTarget.AllBuffered);
         }
-       
+        //AttackAnimationSpeed
+        photonView.RPC("IncreaseAttackAnimSpeed",RpcTarget.AllBuffered);
     }
+
     public void SetCamera(Camera cam)
     {
         this.playerCam.SetActive(false);
@@ -257,13 +269,23 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
         
     }
+    /*
+     * AttackSpeed Rpc Um Animation Anzupassen
+     */
     public void IncreaseRange()
     {
         if (attributePoints > 0)
         {
             attributePoints -= 1;
-
+            AttackSpeed -= 0.1f;
+            AttackAnimSpeedMultiplier += 0.05f;
+            
         }
+    }
+    [PunRPC]
+    public void IncreaseAttackAnimSpeed()
+    {
+        animPlayer.SetFloat("AttackSpeed", AttackAnimSpeedMultiplier);
     }
     public void IncreaseDamage()
     {
@@ -468,15 +490,25 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         otherPlayer = other;
     }
+    [PunRPC]
+    public void CalcHPerc(float health,float maxHealth)
+    {
+        healthPercentage = health / maxHealth;
+        healthBarOverHead.localScale = new Vector3(healthPercentage, 1, 1);
+    }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
             stream.SendNext(health);
+            stream.SendNext(AttackAnimSpeedMultiplier);
+            stream.SendNext(healthPercentage);
         }
         else
         {
             health = (float)stream.ReceiveNext();
+            AttackAnimSpeedMultiplier = (float)stream.ReceiveNext();
+            healthPercentage = (float)stream.ReceiveNext();
         }
     }
 }
