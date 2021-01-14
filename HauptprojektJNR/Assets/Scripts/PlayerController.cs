@@ -108,7 +108,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
         if (dead)
         {
-            
             return;
         }
         //Menu
@@ -143,7 +142,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
         if (Input.GetKeyDown("space")  && stamina >= 3 && (doubleJump >0 || grounded)) {
             doubleJump--;
-            animPlayer.SetInteger("DoubleJump", doubleJump);
+            
             if (doubleJump == 1)
             {
                 stamina -= 3;
@@ -151,10 +150,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 playerRb.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
                 playerRb.velocity = Vector2.up * jumpForce;
             }
-            else
+            else if(doubleJump == 0)
             {
+                animPlayer.SetInteger("DoubleJump", doubleJump);
                 stamina -= 3;
-                
                 playerRb.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
                 playerRb.velocity = Vector2.up * (jumpForce-2f);
             }
@@ -421,13 +420,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [PunRPC]
     void Die()
     {
-        //Resette Health auf MaxHealth
-        //Resette XP
 
-        
+        animPlayer.SetBool("Alive",false);
+        animPlayer.SetTrigger("Die");
         dead = true;
-       
-        
     }
     public void Respawn()
     {
@@ -435,6 +431,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         {
             playerCam.SetActive(true);
         }
+        animPlayer.SetBool("Alive",true);
         dead = false;
         xp = 0;
         health = maxHealth;

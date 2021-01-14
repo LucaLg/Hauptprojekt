@@ -5014,7 +5014,7 @@ PrefabInstance:
     - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}
       propertyPath: m_SynchronizeParameters.Array.size
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}
@@ -5069,7 +5069,7 @@ PrefabInstance:
     - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}
       propertyPath: m_SynchronizeParameters.Array.data[3].SynchronizeType
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}
@@ -5079,7 +5079,7 @@ PrefabInstance:
     - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}
       propertyPath: m_SynchronizeParameters.Array.data[5].SynchronizeType
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}
@@ -5090,6 +5090,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SynchronizeParameters.Array.data[5].Name
       value: DoubleJump
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[6].Type
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[6].Name
+      value: Alive
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[6].SynchronizeType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[0].SynchronizeType
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7032596770027271045, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}

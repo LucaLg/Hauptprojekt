@@ -43,7 +43,9 @@ public class DeathManager :MonoBehaviourPunCallbacks
         // Wenn im Spiel nur ein Spieler existiert und dieser Stirbt wird direkt die ReloadSceneFromLastCheckPoint Methode ausgefuehrt
         if ( Players.Length == 1 && Player1.dead)
         {
-            photonView.RPC("RespawnLastCheckPoint",RpcTarget.AllBuffered);
+            
+            //photonView.RPC("RespawnLastCheckPoint",RpcTarget.AllBuffered);
+            Invoke("RespawnLastCheckPoint",2f);
         }
         if(Players.Length >1) {
             //Beide Spieler Tod
