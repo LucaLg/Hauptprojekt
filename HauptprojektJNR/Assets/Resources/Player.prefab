@@ -5024,7 +5024,7 @@ PrefabInstance:
     - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}
       propertyPath: m_SynchronizeParameters.Array.size
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}
@@ -5120,6 +5120,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SynchronizeParameters.Array.data[0].SynchronizeType
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[7].Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[7].Name
+      value: AttackSpeed
       objectReference: {fileID: 0}
     - target: {fileID: 7032596770027271045, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}

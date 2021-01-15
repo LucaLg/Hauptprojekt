@@ -200,12 +200,13 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         addStamina(staminaRegeneration * Time.deltaTime);
 
        // healthPercentage = health / maxHealth;
-        photonView.RPC("CalcHPerc", RpcTarget.AllBuffered, health, maxHealth);
+        
         float staminaPercentage = stamina / maxStamina;
         float xpPercentage = xp / xpToNextLevel;
         float manaPercentage = mana / maxMana;
+        healthPercentage = health / maxHealth;
         healthBar.localScale = new Vector3(healthPercentage, 1, 1);
-        
+        photonView.RPC("UpdateOverheadBar", RpcTarget.AllBuffered);
         staminaBar.localScale = new Vector3(staminaPercentage, 1, 1);
         xpBar.localScale = new Vector3(xpPercentage, 1, 1);
         manaBar.localScale = new Vector3(manaPercentage, 1, 1);
@@ -387,6 +388,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
     [PunRPC]
+    private void UpdateOverheadBar()
+    {
+        healthBarOverHead.localScale = new Vector3(healthPercentage, 1, 1);
+    }
+    [PunRPC]
     private void CastHeal()
     {
         photonView.RPC("addHealth", RpcTarget.AllBuffered, maxHealth*heal);
@@ -489,12 +495,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public void setOtherPlayer(PhotonView other)
     {
         otherPlayer = other;
-    }
-    [PunRPC]
-    public void CalcHPerc(float health,float maxHealth)
-    {
-        healthPercentage = health / maxHealth;
-        healthBarOverHead.localScale = new Vector3(healthPercentage, 1, 1);
     }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
