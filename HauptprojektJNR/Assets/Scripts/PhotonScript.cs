@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 public class PhotonScript : MonoBehaviourPunCallbacks
 {
@@ -11,6 +13,7 @@ public class PhotonScript : MonoBehaviourPunCallbacks
     public PlayerController Player1;
     public PlayerController Player2;
     public PhotonView LobbyView;
+    public GameData player1Data, player2Data;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +31,16 @@ public class PhotonScript : MonoBehaviourPunCallbacks
         //float x = Random.Range(-3, 5);
         PhotonNetwork.Instantiate("Player", spawnPoint.position, Quaternion.identity);
         Debug.LogAssertion("RaumJoined");
+        if (StaticData.load) {
+            player1Data = loadFromFile();
+            if(player1Data != null)
+            {   
+                player2Data = player1Data.otherPlayerData;
+                Player1.photonView.RPC("LoadPlayerStateFromGameData", RpcTarget.AllBuffered, player1Data);
+
+            }
+            
+        }
         LobbyView.RPC("UpdatePlayers", RpcTarget.AllBuffered);
         //PhotonNetwork.Instantiate("Enemy", new Vector3(x, -1.57f, 0), Quaternion.identity);
     }
@@ -46,6 +59,11 @@ public class PhotonScript : MonoBehaviourPunCallbacks
     {
         Debug.LogAssertion("On Player enter");
         LobbyView.RPC("UpdatePlayers", RpcTarget.AllBuffered);
+        if(Player2 != null && player2Data != null)
+        {
+            Player2.photonView.RPC("LoadPlayerStateFromGameData", RpcTarget.AllBuffered, player2Data);
+            StaticData.load = false;
+        }
     }
     [PunRPC]
     void UpdatePlayers()
@@ -80,5 +98,22 @@ public class PhotonScript : MonoBehaviourPunCallbacks
     public GameObject[] GetPlayers()
     {
         return Players;
+    }
+    private GameData loadFromFile()
+    {
+        string destination = Application.persistentDataPath + "/save.dat";
+        FileStream file;
+
+        if (File.Exists(destination)) file = File.OpenRead(destination);
+        else
+        {
+            Debug.LogError("File not found");
+            return null;
+        }
+
+        BinaryFormatter bf = new BinaryFormatter();
+        GameData data = (GameData)bf.Deserialize(file);
+        file.Close();
+        return data;
     }
 }

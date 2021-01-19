@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class PlayerController : MonoBehaviourPun, IPunObservable
 {
@@ -53,6 +55,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public int doubleJump =2;
     public float healthPercentage;
     public PhotonView otherPlayer;
+    GameData otherPlayerData = null;
 
     //BetterJump
     public float fallMultiplier = 2.5f;
@@ -219,6 +222,59 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         photonView.RPC("IncreaseAttackAnimSpeed",RpcTarget.AllBuffered);
     }
 
+    //Save & Load
+    public void saveGame()
+    {
+        string destination = Application.persistentDataPath + "/save.dat";
+        FileStream file;
+
+        if (File.Exists(destination)) file = File.OpenWrite(destination);
+        else file = File.Create(destination);
+        if(otherPlayer != null)
+        {
+            otherPlayer.RPC("returnGameData", RpcTarget.AllBuffered);
+        }
+        GameData data = new GameData(level, skillPoints, attributePoints, drainLifeLevel, drainManaLevel, rageLevel, healLevel, health, maxHealth, 
+            mana, maxMana, stamina, maxStamina, xp, lastCheckpoint, otherPlayerData);
+        BinaryFormatter bf = new BinaryFormatter();
+        bf.Serialize(file, data);
+        file.Close();
+    }
+    [PunRPC]
+    public void returnGameData()
+    {
+        GameData data = new GameData(level, skillPoints, attributePoints, drainLifeLevel, drainManaLevel, rageLevel, healLevel, health, maxHealth,
+            mana, maxMana, stamina, maxStamina, xp, lastCheckpoint);
+        otherPlayer.RPC("SetOtherPlayerData", RpcTarget.AllBuffered, data);
+    }
+    [PunRPC]
+    public void SetOtherPlayerData(GameData data)
+    {
+        otherPlayerData = data;
+    }
+
+    //LoadGame() triggert von Load Button
+    //RPC: LoadFromGameData wird von masterClient.PhotonScript aufgerufen
+    [PunRPC]
+    private void LoadPlayerStateFromGameData(GameData data)
+    {
+        level = data.level;
+        skillPoints = data.skillPoints;
+        attributePoints = data.attributePoints;
+        drainLifeLevel = data.lifeDrainLevel;
+        drainManaLevel = data.manaDrainLevel;
+        rageLevel = data.rageLevel;
+        healLevel = data.healLevel;
+        health = data.health;
+        maxHealth = data.maxHealth;
+        mana = data.mana;
+        maxMana = data.maxMana;
+        stamina = data.stamina;
+        maxStamina = data.maxStamina;
+        xp = data.XP;
+        lastCheckpoint = data.currentCheckpoint;
+        transform.position = lastCheckpoint;
+    }
     public void SetCamera(Camera cam)
     {
         this.playerCam.SetActive(false);
