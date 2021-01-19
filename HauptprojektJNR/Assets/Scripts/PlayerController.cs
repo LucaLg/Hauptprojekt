@@ -143,6 +143,15 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             doubleJump = 2;
             animPlayer.SetInteger("DoubleJump", doubleJump);
         }
+        //Block
+        if (grounded && Input.GetKey(KeyCode.LeftShift))
+        {
+            Block();
+        }
+        if(grounded && Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            Unblock();
+        }
         //BetterJump
         if(playerRb.velocity.y < 0)
         {
@@ -469,6 +478,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         if (!blocked)
         {
+            animPlayer.SetBool("Hit", true);
+            animPlayer.SetBool("Block", true);
             //photonView.RPC("addHealth", RpcTarget.AllBuffered, -dmg);
             addHealth(-dmg);
         }
@@ -496,6 +507,23 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         otherPlayer = other;
     }
+    [PunRPC]
+    public void CalcHPerc(float health,float maxHealth)
+    {
+        healthPercentage = health / maxHealth;
+        healthBarOverHead.localScale = new Vector3(healthPercentage, 1, 1);
+    }
+    private void Block()
+    {
+        blocked = true;
+        animPlayer.SetBool("IdleBlock",true);
+    }
+    private void Unblock()
+    {
+        blocked = false;
+        animPlayer.SetBool("IdleBlock", false);
+    }
+    
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
