@@ -50,10 +50,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private bool blocked = false;
     public bool dead = false;
     public Vector3 lastCheckpoint;
-    public int doubleJump =2;
+    public bool doubleJump;
     public float healthPercentage;
     public PhotonView otherPlayer;
-
+    public float tapSpeed = 0.5f;
+    
     //BetterJump
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
@@ -140,41 +141,55 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         bool grounded = isGrounded();
         if (grounded)
         {
-            doubleJump = 2;
-            animPlayer.SetInteger("DoubleJump", doubleJump);
+            doubleJump = false;
+            animPlayer.SetBool("DoubleJump", false);
         }
         //Block
         if (grounded && Input.GetKey(KeyCode.LeftShift))
         {
-            Block();
+            animPlayer.SetBool("IdleBlock", true);
         }
         if(grounded && Input.GetKeyUp(KeyCode.LeftShift))
         {
             Unblock();
         }
+        //Fall
+        if(playerRb.velocity.y < -0.5)
+        {
+            animPlayer.SetBool("Fall", true);
+            
+        }
         //BetterJump
         if(playerRb.velocity.y < 0)
         {
+            
             playerRb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
-        if (Input.GetKeyDown("space")  && stamina >= 3 && (doubleJump >0 || grounded)) {
-            doubleJump--;
-            
-            if (doubleJump == 1)
+        if(playerRb.velocity.y >= 0)
+        {
+            animPlayer.SetBool("Fall", false);
+        }
+        if (Input.GetKeyDown("space") && stamina >= 3){
+                
+            if (grounded)
             {
                 stamina -= 3;
                 animPlayer.SetTrigger("Jump");
                 playerRb.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
                 playerRb.velocity = Vector2.up * jumpForce;
-            }
-            else if(doubleJump == 0)
+                doubleJump = true;
+                
+            }else if(doubleJump)
             {
-                animPlayer.SetInteger("DoubleJump", doubleJump);
                 stamina -= 3;
+                
+                animPlayer.SetBool("DoubleJump",true);
                 playerRb.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
-                playerRb.velocity = Vector2.up * (jumpForce-2f);
+                playerRb.velocity = Vector2.up * jumpForce;
+                doubleJump = false;
             }
-        }
+            
+        }    
         if(Input.GetKeyDown("v") && mana > 3)
         {
             addMana(-3);
@@ -198,7 +213,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             //Play Animation
             animPlayer.SetTrigger("Attack");
             stamina -= 2;
-            photonView.RPC("Attack", RpcTarget.AllBuffered);
+            //photonView.RPC("Attack", RpcTarget.AllBuffered);
             nextAttackTime = Time.time + AttackSpeed;
         }
        
@@ -476,10 +491,15 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
    
     public void IsAttacked(float dmg)
     {
-        if (!blocked)
+        if (blocked && stamina >=3)
         {
-            animPlayer.SetBool("Hit", true);
-            animPlayer.SetBool("Block", true);
+            stamina -= 2;
+            animPlayer.SetTrigger("Hit");
+            animPlayer.SetTrigger("Block");
+
+        }
+        else
+        {
             //photonView.RPC("addHealth", RpcTarget.AllBuffered, -dmg);
             addHealth(-dmg);
         }
@@ -516,14 +536,16 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private void Block()
     {
         blocked = true;
-        animPlayer.SetBool("IdleBlock",true);
     }
     private void Unblock()
     {
         blocked = false;
         animPlayer.SetBool("IdleBlock", false);
     }
-    
+    public void SetLastCheckPoint(Transform checkpoint)
+    {
+        lastCheckpoint = checkpoint.position;
+    }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)

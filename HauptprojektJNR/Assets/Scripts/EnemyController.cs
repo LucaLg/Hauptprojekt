@@ -160,8 +160,8 @@ public class EnemyController : MonoBehaviour,IPunObservable
             if (!playerTarget.dead && targetFound && Vector3.Distance(transform.position, target) <= distanceToStop + 0.5f)
             {
                 //Attack
-
-                photonView.RPC("Attack", RpcTarget.AllBuffered);
+                enemyAnimator.SetTrigger("Attack");
+                // photonView.RPC("Attack", RpcTarget.AllBuffered);
 
             }
             if (!targetFound)
@@ -170,15 +170,18 @@ public class EnemyController : MonoBehaviour,IPunObservable
             }
         }
     }
+
+    //Durch Animations Event  vereinfacht
+    //AttackSpeed = Speed der Animation
     [PunRPC]
      void Attack()
     {
 
-        if (Time.time >= nextAttackTime)
-        {
+        /*if (Time.time >= nextAttackTime)
+        {*/
                
             //enemyAnimator.SetInteger("AnimState", 2);
-            enemyAnimator.SetTrigger("Attack");
+            //enemyAnimator.SetTrigger("Attack");
            
             //Detect Enemies in range of Attack
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, playerLayers);
@@ -193,15 +196,15 @@ public class EnemyController : MonoBehaviour,IPunObservable
                 //enemy.GetComponentInParent<EnemyController>().health--;
             }
             
-            nextAttackTime = Time.time + attackRate;
+        /*    nextAttackTime = Time.time + attackRate;
         }
         else
         {
             enemyAnimator.SetInteger("AnimState", 0);
-        }
+        }*/
     }
     
-        public void IsAttacked(float dmg)
+    public void IsAttacked(float dmg)
     {
         if (!blocked)
         {
