@@ -35,6 +35,7 @@ public class EnemyController : MonoBehaviour,IPunObservable
     public float damage;
     private Vector3 spawnPoint;
     public float xpOnDeath;
+    public float AttackSpeed;
     void Start()
     {
         //SpawnPoint zum Respawn setzten
@@ -52,8 +53,8 @@ public class EnemyController : MonoBehaviour,IPunObservable
         photonView = GetComponent<PhotonView>();
         enemyRb = GetComponent<Rigidbody2D>();
         enemyAnimator = GetComponent<Animator>();
-        
-       
+
+        enemyAnimator.SetFloat("AttackSpeed", AttackSpeed);
         //HealthbarSetup
         health = maxHealth;
         lowHealth = Color.red;
@@ -160,8 +161,9 @@ public class EnemyController : MonoBehaviour,IPunObservable
             if (!playerTarget.dead && targetFound && Vector3.Distance(transform.position, target) <= distanceToStop + 0.5f)
             {
                 //Attack
-
-                photonView.RPC("Attack", RpcTarget.AllBuffered);
+                
+                enemyAnimator.SetTrigger("Attack");
+                //photonView.RPC("Attack", RpcTarget.AllBuffered);
 
             }
             if (!targetFound)
@@ -173,12 +175,12 @@ public class EnemyController : MonoBehaviour,IPunObservable
     [PunRPC]
      void Attack()
     {
-
+/*
         if (Time.time >= nextAttackTime)
-        {
+        {*/
                
             //enemyAnimator.SetInteger("AnimState", 2);
-            enemyAnimator.SetTrigger("Attack");
+            
            
             //Detect Enemies in range of Attack
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, playerLayers);
@@ -193,12 +195,12 @@ public class EnemyController : MonoBehaviour,IPunObservable
                 //enemy.GetComponentInParent<EnemyController>().health--;
             }
             
-            nextAttackTime = Time.time + attackRate;
+      /*      nextAttackTime = Time.time + attackRate;
         }
         else
         {
             enemyAnimator.SetInteger("AnimState", 0);
-        }
+        }*/
     }
     
         public void IsAttacked(float dmg)

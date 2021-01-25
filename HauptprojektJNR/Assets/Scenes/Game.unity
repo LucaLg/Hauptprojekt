@@ -147,6 +147,11 @@ PrefabInstance:
       propertyPath: damage
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3221881251541401731, guid: 7f710ab24d29a6543887b8f5e654625a,
+        type: 3}
+      propertyPath: AttackSpeed
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3221881251541401734, guid: 7f710ab24d29a6543887b8f5e654625a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3101,6 +3106,11 @@ PrefabInstance:
     - target: {fileID: 3221881251541401731, guid: 7f710ab24d29a6543887b8f5e654625a,
         type: 3}
       propertyPath: attackRate
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3221881251541401731, guid: 7f710ab24d29a6543887b8f5e654625a,
+        type: 3}
+      propertyPath: AttackSpeed
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3221881251541401734, guid: 7f710ab24d29a6543887b8f5e654625a,
@@ -82550,6 +82560,7 @@ GameObject:
   - component: {fileID: 1027093942}
   - component: {fileID: 1027093941}
   - component: {fileID: 1027093940}
+  - component: {fileID: 1027093948}
   m_Layer: 8
   m_Name: Archer
   m_TagString: Enemy
@@ -82758,6 +82769,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1027093948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1027093939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9a7803d9aa89114185a4b55318c0e1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerLayers:
+    serializedVersion: 2
+    m_Bits: 1024
+  health: 4
+  maxHealth: 4
+  moveSpeed: 1
+  fireRate: 0
+  hit: 0
+  damage: 0
+  givenXp: 2
 --- !u!1 &1061282554
 GameObject:
   m_ObjectHideFlags: 0
@@ -84405,6 +84438,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Enemy (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3221881251541401731, guid: 7f710ab24d29a6543887b8f5e654625a,
+        type: 3}
+      propertyPath: AttackSpeed
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3221881251541401734, guid: 7f710ab24d29a6543887b8f5e654625a,
         type: 3}

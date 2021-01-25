@@ -50,7 +50,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private bool blocked = false;
     public bool dead = false;
     public Vector3 lastCheckpoint;
-    public int doubleJump =2;
     public float healthPercentage;
     public PhotonView otherPlayer;
 
@@ -71,6 +70,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public float AttackSpeed;
     private float nextAttackTime = 0f;
     private float AttackAnimSpeedMultiplier = 1;
+    private bool doubleJump = true;
     private void Awake()
     {
         animPlayer = GetComponent<Animator>();
@@ -137,11 +137,19 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         {
             animPlayer.SetBool("isMoving", false);
         }
+        if(playerRb.velocity.y < -3)
+        {
+            animPlayer.SetBool("Fall",true);
+        }
+        else
+        {
+            animPlayer.SetBool("Fall", false);
+        }
         bool grounded = isGrounded();
         if (grounded)
         {
-            doubleJump = 2;
-            animPlayer.SetInteger("DoubleJump", doubleJump);
+            doubleJump = true;
+            
         }
         //Block
         if (grounded && Input.GetKey(KeyCode.LeftShift))
@@ -157,23 +165,22 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         {
             playerRb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
-        if (Input.GetKeyDown("space")  && stamina >= 3 && (doubleJump >0 || grounded)) {
-            doubleJump--;
+        if (Input.GetKeyDown("space")  && stamina >= 3 && ( doubleJump || grounded)) {
+           
             
-            if (doubleJump == 1)
+            if (grounded)
             {
-                stamina -= 3;
                 animPlayer.SetTrigger("Jump");
-                playerRb.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
-                playerRb.velocity = Vector2.up * jumpForce;
+    
             }
-            else if(doubleJump == 0)
+            else if(doubleJump)
             {
-                animPlayer.SetInteger("DoubleJump", doubleJump);
-                stamina -= 3;
-                playerRb.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
-                playerRb.velocity = Vector2.up * (jumpForce-2f);
+                animPlayer.SetTrigger("DoubleJump");
+                doubleJump = false;
             }
+            stamina -= 3;
+            playerRb.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
+            playerRb.velocity = Vector2.up * jumpForce;
         }
         if(Input.GetKeyDown("v") && mana > 3)
         {
@@ -198,7 +205,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             //Play Animation
             animPlayer.SetTrigger("Attack");
             stamina -= 2;
-            photonView.RPC("Attack", RpcTarget.AllBuffered);
+            //photonView.RPC("Attack", RpcTarget.AllBuffered);
             nextAttackTime = Time.time + AttackSpeed;
         }
        
@@ -486,10 +493,16 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         if (!blocked)
         {
-            animPlayer.SetBool("Hit", true);
-            animPlayer.SetBool("Block", true);
+            
             //photonView.RPC("addHealth", RpcTarget.AllBuffered, -dmg);
             addHealth(-dmg);
+        }
+        else if(stamina >= 3)
+        {
+            stamina -= 3;
+            animPlayer.SetTrigger("Hit");
+            animPlayer.SetTrigger("Block");
+            
         }
     }
     [PunRPC]
