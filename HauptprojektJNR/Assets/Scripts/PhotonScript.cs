@@ -32,11 +32,13 @@ public class PhotonScript : MonoBehaviourPunCallbacks
         PhotonNetwork.Instantiate("Player", spawnPoint.position, Quaternion.identity);
         Debug.LogAssertion("RaumJoined");
         if (StaticData.load) {
+            LobbyView.RPC("UpdatePlayers", RpcTarget.AllBuffered);
             player1Data = loadFromFile();
             if(player1Data != null)
-            {   
-                player2Data = player1Data.otherPlayerData;
-                Player1.photonView.RPC("LoadPlayerStateFromGameData", RpcTarget.AllBuffered, player1Data);
+            {
+                //player2Data = player1Data.otherPlayerData;
+                //Player1.photonView.RPC("LoadPlayerStateFromGameData", RpcTarget.AllBuffered, player1Data);
+                Player1.LoadPlayerStateFromGameData(player1Data);
 
             }
             
@@ -101,19 +103,24 @@ public class PhotonScript : MonoBehaviourPunCallbacks
     }
     private GameData loadFromFile()
     {
-        string destination = Application.persistentDataPath + "/save.dat";
-        FileStream file;
+        string destination = Application.persistentDataPath + "/save.json";
+        //Debug.Log("Try to load from " + destination);
+        //FileStream file;
 
-        if (File.Exists(destination)) file = File.OpenRead(destination);
-        else
-        {
-            Debug.LogError("File not found");
-            return null;
-        }
+        //if (File.Exists(destination)) file = File.OpenRead(destination);
+        //else
+        //{
+        //    Debug.LogError("File not found");
+        //    return null;
+        //}
 
-        BinaryFormatter bf = new BinaryFormatter();
-        GameData data = (GameData)bf.Deserialize(file);
-        file.Close();
+        //BinaryFormatter bf = new BinaryFormatter();
+        //GameData data = (GameData) bf.Deserialize(file);
+        //file.Close();
+        GameData data = JsonUtility.FromJson<GameData>(File.ReadAllText(destination));
+        Debug.Log(data.stamina);
+
         return data;
+        Debug.Log("Loaded (?)");
     }
 }

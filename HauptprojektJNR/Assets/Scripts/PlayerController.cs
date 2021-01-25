@@ -220,44 +220,54 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
         //AttackAnimationSpeed
         photonView.RPC("IncreaseAttackAnimSpeed",RpcTarget.AllBuffered);
+        Debug.Log(health);
     }
 
     //Save & Load
     public void saveGame()
     {
-        string destination = Application.persistentDataPath + "/save.dat";
-        FileStream file;
+        string destination = Application.persistentDataPath + "/save.json";
+        //FileStream file;
 
-        if (File.Exists(destination)) file = File.OpenWrite(destination);
-        else file = File.Create(destination);
-        if(otherPlayer != null)
-        {
-            otherPlayer.RPC("returnGameData", RpcTarget.AllBuffered);
-        }
+        //if (File.Exists(destination)) file = File.OpenWrite(destination);
+        //else file = File.Create(destination);
+        //if(otherPlayer != null)
+        //{
+        //    otherPlayer.RPC("returnGameData", RpcTarget.AllBuffered);
+        //}
+        
+        //BinaryFormatter bf = new BinaryFormatter();
+        //bf.Serialize(file, data);
+        //file.Close();
+        
         GameData data = new GameData(level, skillPoints, attributePoints, drainLifeLevel, drainManaLevel, rageLevel, healLevel, health, maxHealth, 
-            mana, maxMana, stamina, maxStamina, xp, lastCheckpoint, otherPlayerData);
-        BinaryFormatter bf = new BinaryFormatter();
-        bf.Serialize(file, data);
-        file.Close();
+                mana, maxMana, stamina, maxStamina, xp, lastCheckpoint, otherPlayerData);
+        string jsonData = JsonUtility.ToJson(data, true);
+        File.WriteAllText(destination, jsonData);
+        Debug.Log("Saved at " + destination);
     }
     [PunRPC]
     public void returnGameData()
     {
         GameData data = new GameData(level, skillPoints, attributePoints, drainLifeLevel, drainManaLevel, rageLevel, healLevel, health, maxHealth,
             mana, maxMana, stamina, maxStamina, xp, lastCheckpoint);
-        otherPlayer.RPC("SetOtherPlayerData", RpcTarget.AllBuffered, data);
+        object[] dataAsArray = new object[1];
+        dataAsArray[0] = data;
+        otherPlayer.RPC("SetOtherPlayerData", RpcTarget.AllBuffered, dataAsArray as object);
     }
     [PunRPC]
-    public void SetOtherPlayerData(GameData data)
+    public void SetOtherPlayerData(object[] data)
     {
-        otherPlayerData = data;
+
+        otherPlayerData = (GameData) data[0];
     }
 
     //LoadGame() triggert von Load Button
     //RPC: LoadFromGameData wird von masterClient.PhotonScript aufgerufen
     [PunRPC]
-    private void LoadPlayerStateFromGameData(GameData data)
+    public void LoadPlayerStateFromGameData(GameData data)
     {
+        Debug.Log("Entered : " + data.health);
         level = data.level;
         skillPoints = data.skillPoints;
         attributePoints = data.attributePoints;
@@ -272,8 +282,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         stamina = data.stamina;
         maxStamina = data.maxStamina;
         xp = data.XP;
-        lastCheckpoint = data.currentCheckpoint;
+        lastCheckpoint = new Vector3(data.currentCheckpointX, data.currentCheckpointY, 0);
         transform.position = lastCheckpoint;
+        Debug.Log("HealthAFterLoad" + health);
     }
     public void SetCamera(Camera cam)
     {

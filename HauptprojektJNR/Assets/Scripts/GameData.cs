@@ -7,8 +7,8 @@ public class GameData
 {
     public int level, skillPoints, attributePoints, lifeDrainLevel, manaDrainLevel, rageLevel, healLevel;
     public float health, maxHealth, mana, maxMana, stamina, maxStamina, XP;
-    public Vector3 currentCheckpoint;
-    public GameData otherPlayerData;
+    public float currentCheckpointX, currentCheckpointY;
+    //public GameData otherPlayerData;
 
     public GameData(int pLevel, int pSkillPoints, int pAttributePoints, int pLifeDrainLevel, int pManaDrainLevel, int pRageLevel, int pHealLevel, float pHealth, float pMaxHealth,
         float pMana, float pMaxMana, float pStamina, float pMaxStamina, float pXP, Vector3 pCurrentCheckpoint, GameData pOtherPlayerData)
@@ -24,10 +24,12 @@ public class GameData
         maxHealth = pMaxHealth;
         mana = pMana;
         maxMana = pMaxMana;
-        stamina = pMaxStamina;
+        stamina = pStamina;
+        maxStamina = pMaxStamina;
         XP = pXP;
-        currentCheckpoint = pCurrentCheckpoint;
-        otherPlayerData = pOtherPlayerData;
+        currentCheckpointX = pCurrentCheckpoint.x;
+        currentCheckpointY = pCurrentCheckpoint.y;
+        //otherPlayerData = pOtherPlayerData;
     }
     public GameData(int pLevel, int pSkillPoints, int pAttributePoints, int pLifeDrainLevel, int pManaDrainLevel, int pRageLevel, int pHealLevel, float pHealth, float pMaxHealth,
         float pMana, float pMaxMana, float pStamina, float pMaxStamina, float pXP, Vector3 pCurrentCheckpoint)
@@ -45,7 +47,8 @@ public class GameData
         maxMana = pMaxMana;
         stamina = pMaxStamina;
         XP = pXP;
-        currentCheckpoint = pCurrentCheckpoint;
+        currentCheckpointX = pCurrentCheckpoint.x;
+        currentCheckpointY = pCurrentCheckpoint.y;
     }
 
 
