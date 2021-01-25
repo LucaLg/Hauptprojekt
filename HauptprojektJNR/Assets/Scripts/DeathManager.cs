@@ -12,6 +12,7 @@ public class DeathManager :MonoBehaviourPunCallbacks
     public PlayerController Player2;
     private Vector3 latestCheckpoint;
     public GameObject[] enemies;
+    public GameObject[] archers;
     private PhotonView photonView;
     public Camera player1Cam;
     public Camera player2Cam;
@@ -24,6 +25,7 @@ public class DeathManager :MonoBehaviourPunCallbacks
         photonView = GetComponent<PhotonView>();
         LobbyObject = GameObject.FindGameObjectWithTag("LobbyManager");
         LobbyScript = LobbyObject.GetComponent<PhotonScript>();
+        archers = GameObject.FindGameObjectsWithTag("Archer");
     }
 
 
@@ -98,7 +100,10 @@ public class DeathManager :MonoBehaviourPunCallbacks
     [PunRPC]
     void RespawnLastCheckPoint()
     {
-        
+        foreach(GameObject archer in archers)
+        {
+            archer.GetComponent<ArcherController>().Respawn();
+        }
         //Respawne alle Enemies
         foreach(GameObject enemie in enemies)
         {
