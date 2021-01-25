@@ -25,13 +25,14 @@ public class ArcherController : MonoBehaviour
     private PlayerController playerTargetController;
     private Vector3 playerTargetPosition;
     private bool targetFound = false;
-    private float distanceToHold;
+    private float distanceToHold = 1.5f;
     void Start()
     {
         Photon = GameObject.Find("Photon");
         health = maxHealth;
         archerAnimator = GetComponent<Animator>();
         firePoint = GetComponentInChildren<Transform>();
+        photonView = GetComponent<PhotonView>();
     }
 
     // Update is called once per frame
@@ -58,8 +59,9 @@ public class ArcherController : MonoBehaviour
             }
         }
         findTarget();
+        Debug.Log(targetFound);
         if (targetFound) { 
-            Move();
+            //Move();
             Attack();
         }
         else
@@ -100,6 +102,7 @@ public class ArcherController : MonoBehaviour
                 photonView.RPC("FlipTrue", RpcTarget.AllBuffered);
                 targetFound = true;
             }
+            Debug.Log(targetFound + " Jaaa");
         }
         //Finde Rechts Target
         if (targetRight.collider != null)
@@ -140,6 +143,7 @@ public class ArcherController : MonoBehaviour
         }
         playerTargetPosition = target;
         playerTargetController = playerTarget;
+        
     }
     public void Respawn()
     {
@@ -153,10 +157,15 @@ public class ArcherController : MonoBehaviour
     {
         photonView.RPC("disable", RpcTarget.AllBuffered);
     }
+    [PunRPC]
+    void disable()
+    {
+        gameObject.SetActive(false);
+    }
     public void IsAttacked(float dmg)
     {
-            hit = true;
-            this.health = health - dmg;
+        hit = true;
+        this.health = health - dmg;
     }
     [PunRPC]
     void Die()

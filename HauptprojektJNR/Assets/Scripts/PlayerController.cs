@@ -445,8 +445,16 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         //Damage
         foreach (BoxCollider2D enemy in hitEnemies)
         {
+            if (enemy.TryGetComponent(out EnemyController enemyC))
+            {
+                enemy.GetComponent<EnemyController>().IsAttacked(damage * damageModifier);
+            }
             //Damage wird nicht von anderer Klasse manipuliert
-            enemy.GetComponent<EnemyController>().IsAttacked(damage * damageModifier);
+            if (enemy.TryGetComponent(out ArcherController archerC))
+            {
+                enemy.GetComponent<ArcherController>().IsAttacked(damage * damageModifier);
+            }
+            
             addHealth(damage * damageModifier * lifeDrain);
             addMana(damage * damageModifier * manaDrain);
 
