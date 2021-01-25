@@ -8,6 +8,6 @@ public class Checkpoint : MonoBehaviour
    
     private void OnTriggerEnter2D(Collider2D player)
     {
-      player.GetComponentInParent<PlayerController>().SetLastCheckPoint(transform);
+      player.GetComponentInParent<PlayerController>().lastCheckpoint= this.transform.position;
     }
 }

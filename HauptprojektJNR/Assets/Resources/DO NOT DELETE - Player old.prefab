@@ -17,8 +17,9 @@ GameObject:
   - component: {fileID: 7032596770027271043}
   - component: {fileID: 679026334}
   - component: {fileID: 713343940645459300}
+  - component: {fileID: 7032596770027271042}
   m_Layer: 0
-  m_Name: DO NOT DELETE - Player old
+  m_Name: Player old
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -149,8 +150,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 7032596770027271052}
   - {fileID: 7032596770027271043}
-  - {fileID: 713343940645459300}
-  - {fileID: 0}
+  - {fileID: 7032596770027271042}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -230,31 +230,28 @@ MonoBehaviour:
   enemyLayers:
     serializedVersion: 2
     m_Bits: 256
-  attackPoint: {fileID: 0}
-  healthBarOverHead: {fileID: 0}
   playerCam: {fileID: 0}
-  menuCanvas: {fileID: 0}
-  txtLevel: {fileID: 0}
-  txtAttrPoints: {fileID: 0}
-  txtSkillPoints: {fileID: 0}
-  moveSpeed: 2
-  jumpForce: 5
   attackRange: 1
   maxHealth: 10
   health: 0
-  maxStamina: 10
-  stamina: 0
-  mana: 10
-  maxMana: 10
-  staminaRegeneration: 2
-  damage: 1
-  dead: 0
-  lastCheckpoint: {x: 0, y: 0, z: 0}
-  doubleJump: 0
-  healthPercentage: 0
-  otherPlayer: {fileID: 0}
-  tapSpeed: 0.5
-  fallMultiplier: 2.5
-  lowJumpMultiplier: 2
-  damageModifier: 1
-  AttackSpeed: 0
+--- !u!114 &7032596770027271042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7032596770027271045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 9
+    SynchronizeType: 1
+    Name: Attack
+  m_SynchronizeLayers:
+  - SynchronizeType: 2
+    LayerIndex: 0
