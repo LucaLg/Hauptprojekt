@@ -20,18 +20,21 @@ public class ArcherController : MonoBehaviour
     public float damage;
     public float givenXp;
     private Vector3 spawnPoint;
-    private Transform firePoint;
+    public Transform firePoint;
     private bool isDead = false;
     private PlayerController playerTargetController;
     private Vector3 playerTargetPosition;
     private bool targetFound = false;
     private float distanceToHold = 1.5f;
+    private bool shootRight = false;
+    public float launchForce = 4;
+    public float lookOnRange = 7f;
     void Start()
     {
         Photon = GameObject.Find("Photon");
         health = maxHealth;
         archerAnimator = GetComponent<Animator>();
-        firePoint = GetComponentInChildren<Transform>();
+        //firePoint = GetComponentInChildren<Transform>();
         photonView = GetComponent<PhotonView>();
     }
 
@@ -60,9 +63,9 @@ public class ArcherController : MonoBehaviour
         }
         findTarget();
         Debug.Log(targetFound);
-        if (targetFound) { 
+        if (targetFound) {
             //Move();
-            Attack();
+            archerAnimator.SetTrigger("Attack");
         }
         else
         {
@@ -72,8 +75,21 @@ public class ArcherController : MonoBehaviour
     private void Attack() {
         //Instantiate Arrow
         //Damage in ArrowScript
-        PhotonNetwork.Instantiate("Arrow", firePoint.position, Quaternion.identity);
-        archerAnimator.SetTrigger("Attack");
+        GameObject arrow = PhotonNetwork.Instantiate("Arrow", firePoint.position, firePoint.rotation);
+        
+        Debug.LogError(arrow.transform.rotation.eulerAngles);
+       
+        arrow.GetComponent<Projectile>().SetTarget(playerTargetPosition);
+        if (shootRight)
+        {
+            arrow.GetComponent<PhotonView>().RPC("FlipTrue", RpcTarget.AllBuffered);
+            arrow.GetComponent<Rigidbody2D>().velocity = transform.right * launchForce;
+        }
+        else 
+        {
+            arrow.GetComponent<PhotonView>().RPC("FlipFalse", RpcTarget.AllBuffered);
+            arrow.GetComponent<Rigidbody2D>().velocity = -1 * transform.right * launchForce;
+        }
     }
     void Move()
     {
@@ -90,8 +106,8 @@ public class ArcherController : MonoBehaviour
         
         PlayerController playerTarget = null;
         Vector3 target = transform.position;
-        RaycastHit2D targetRight = Physics2D.Raycast(transform.position, Vector3.right, 7f, playerLayers);
-        RaycastHit2D targetLeft = Physics2D.Raycast(transform.position, Vector3.left, 7f, playerLayers);
+        RaycastHit2D targetRight = Physics2D.Raycast(transform.position, Vector3.right,lookOnRange , playerLayers); ;
+        RaycastHit2D targetLeft = Physics2D.Raycast(transform.position, Vector3.left, lookOnRange, playerLayers);
         //Finde Links Target
         if(targetLeft.collider != null)
         {
@@ -180,13 +196,14 @@ public class ArcherController : MonoBehaviour
     private void FlipTrue()
     {
         transform.localScale = new Vector3(-1, 1, 1);
-
+        shootRight = false;
     }
     [PunRPC]
     private void FlipFalse()
     {
 
         transform.localScale = new Vector3(1, 1, 1);
+        shootRight = true;
 
     }
 }

@@ -12,6 +12,9 @@ TagManager:
   - CheckPoint
   - PlayerCamera
   - LobbyManager
+  - DeathManager
+  - FirePoint
+  - Archer
   layers:
   - Default
   - TransparentFX
