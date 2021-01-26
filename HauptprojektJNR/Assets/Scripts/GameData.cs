@@ -6,12 +6,12 @@ using UnityEngine;
 public class GameData
 {
     public int level, skillPoints, attributePoints, lifeDrainLevel, manaDrainLevel, rageLevel, healLevel;
-    public float health, maxHealth, mana, maxMana, stamina, maxStamina, XP;
+    public float health, maxHealth, mana, maxMana, stamina, maxStamina, XP, damage, attackspeed;
     public float currentCheckpointX, currentCheckpointY;
-    //public GameData otherPlayerData;
+    public GameData otherPlayerData;
 
     public GameData(int pLevel, int pSkillPoints, int pAttributePoints, int pLifeDrainLevel, int pManaDrainLevel, int pRageLevel, int pHealLevel, float pHealth, float pMaxHealth,
-        float pMana, float pMaxMana, float pStamina, float pMaxStamina, float pXP, Vector3 pCurrentCheckpoint, GameData pOtherPlayerData)
+        float pMana, float pMaxMana, float pMaxStamina, float pXP, Vector3 pCurrentCheckpoint, float pDamage, float pAttackspeed, GameData pOtherPlayerData)
     {
         level = pLevel;
         skillPoints = pSkillPoints;
@@ -24,15 +24,17 @@ public class GameData
         maxHealth = pMaxHealth;
         mana = pMana;
         maxMana = pMaxMana;
-        stamina = pStamina;
+        stamina = pMaxStamina;
         maxStamina = pMaxStamina;
         XP = pXP;
         currentCheckpointX = pCurrentCheckpoint.x;
         currentCheckpointY = pCurrentCheckpoint.y;
-        //otherPlayerData = pOtherPlayerData;
+        damage = pDamage;
+        attackspeed = pAttackspeed;
+        otherPlayerData = pOtherPlayerData;
     }
     public GameData(int pLevel, int pSkillPoints, int pAttributePoints, int pLifeDrainLevel, int pManaDrainLevel, int pRageLevel, int pHealLevel, float pHealth, float pMaxHealth,
-        float pMana, float pMaxMana, float pStamina, float pMaxStamina, float pXP, Vector3 pCurrentCheckpoint)
+        float pMana, float pMaxMana,  float pMaxStamina, float pXP, Vector3 pCurrentCheckpoint, float pDamage, float pAttackspeed)
     {
         level = pLevel;
         skillPoints = pSkillPoints;
@@ -49,6 +51,8 @@ public class GameData
         XP = pXP;
         currentCheckpointX = pCurrentCheckpoint.x;
         currentCheckpointY = pCurrentCheckpoint.y;
+        damage = pDamage;
+        attackspeed = pAttackspeed;
     }
 
 
