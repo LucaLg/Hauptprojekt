@@ -2442,7 +2442,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 5316969998028384532}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: a479111fc98a3bd42bf9d76fc0b9e3bf, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -4956,6 +4956,11 @@ PrefabInstance:
       propertyPath: healthBarOverHead
       value: 
       objectReference: {fileID: 7677035002326903798}
+    - target: {fileID: 713343940645459300, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: playerCollider
+      value: 
+      objectReference: {fileID: 87352511180515169}
     - target: {fileID: 7032596770027271041, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5024,7 +5029,7 @@ PrefabInstance:
     - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}
       propertyPath: m_SynchronizeParameters.Array.size
-      value: 8
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}
@@ -5130,6 +5135,46 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SynchronizeParameters.Array.data[7].Name
       value: AttackSpeed
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[8].Type
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[8].Name
+      value: Fall
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[9].Type
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[9].Name
+      value: IdleBlock
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[10].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[10].Name
+      value: Block
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[11].Type
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7032596770027271042, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[11].Name
+      value: Hit
       objectReference: {fileID: 0}
     - target: {fileID: 7032596770027271045, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}

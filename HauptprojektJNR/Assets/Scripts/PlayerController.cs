@@ -71,6 +71,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private float nextAttackTime = 0f;
     private float AttackAnimSpeedMultiplier = 1;
     private bool doubleJump = true;
+    public Collider2D playerCollider;
+    public PhysicsMaterial2D noFriction;
     private void Awake()
     {
         animPlayer = GetComponent<Animator>();
@@ -160,10 +162,18 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         {
             Unblock();
         }
+        if (!grounded) {
+            playerCollider.sharedMaterial.friction = 0;
+        }
+        else
+        {
+            playerCollider.sharedMaterial.friction = 0.4f;
+        }
         //BetterJump
         if(playerRb.velocity.y < 0)
         {
             playerRb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+            
         }
         if (Input.GetKeyDown("space")  && stamina >= 3 && ( doubleJump || grounded)) {
            
@@ -171,16 +181,19 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             if (grounded)
             {
                 animPlayer.SetTrigger("Jump");
-    
+                stamina -= 3;
+                playerRb.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
+                playerRb.velocity = Vector2.up * jumpForce;
             }
-            else if(doubleJump)
+            else if(doubleJump && playerRb.velocity.y >0)
             {
                 animPlayer.SetTrigger("DoubleJump");
                 doubleJump = false;
+                stamina -= 3;
+                playerRb.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
+                playerRb.velocity = Vector2.up * jumpForce;
             }
-            stamina -= 3;
-            playerRb.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
-            playerRb.velocity = Vector2.up * jumpForce;
+            
         }
         if(Input.GetKeyDown("v") && mana > 3)
         {

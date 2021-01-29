@@ -15,6 +15,9 @@ TagManager:
   - DeathManager
   - FirePoint
   - Archer
+  - Boden
+  - Projectile
+  - BossGate
   layers:
   - Default
   - TransparentFX
@@ -27,7 +30,7 @@ TagManager:
   - Enemy
   - Platform
   - Player
-  - 
+  - Projectile
   - 
   - 
   - 

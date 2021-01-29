@@ -41,11 +41,7 @@ public class ArcherController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (hit)
-        {
-            archerAnimator.SetTrigger("hit");
-            hit = false;
-        }
+       
         if (!photonView.IsMine)
         {
             return;
@@ -58,11 +54,11 @@ public class ArcherController : MonoBehaviour
             {
                 archerAnimator.SetTrigger("Dead");
 
-                Invoke("Destroy", 0.8f);
+                
             }
         }
         findTarget();
-        Debug.Log(targetFound);
+        
         if (targetFound) {
             //Move();
             archerAnimator.SetTrigger("Attack");
@@ -75,20 +71,14 @@ public class ArcherController : MonoBehaviour
     private void Attack() {
         //Instantiate Arrow
         //Damage in ArrowScript
-        GameObject arrow = PhotonNetwork.Instantiate("Arrow", firePoint.position, firePoint.rotation);
-        
-        Debug.LogError(arrow.transform.rotation.eulerAngles);
-       
-        arrow.GetComponent<Projectile>().SetTarget(playerTargetPosition);
-        if (shootRight)
+        GameObject arrow = PhotonNetwork.Instantiate("Arrow", firePoint.position, firePoint.rotation); 
+        if(shootRight)
         {
-            arrow.GetComponent<PhotonView>().RPC("FlipTrue", RpcTarget.AllBuffered);
-            arrow.GetComponent<Rigidbody2D>().velocity = transform.right * launchForce;
+            arrow.GetComponent<Rigidbody2D>().velocity = firePoint.right * launchForce;
         }
         else 
-        {
-            arrow.GetComponent<PhotonView>().RPC("FlipFalse", RpcTarget.AllBuffered);
-            arrow.GetComponent<Rigidbody2D>().velocity = -1 * transform.right * launchForce;
+        { 
+            arrow.GetComponent<Rigidbody2D>().velocity = -1f * firePoint.right * launchForce;
         }
     }
     void Move()
@@ -180,7 +170,7 @@ public class ArcherController : MonoBehaviour
     }
     public void IsAttacked(float dmg)
     {
-        hit = true;
+        archerAnimator.SetTrigger("Hit");
         this.health = health - dmg;
     }
     [PunRPC]
