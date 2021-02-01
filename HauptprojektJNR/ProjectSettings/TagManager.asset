@@ -18,6 +18,7 @@ TagManager:
   - Boden
   - Projectile
   - BossGate
+  - Boss
   layers:
   - Default
   - TransparentFX
@@ -31,7 +32,7 @@ TagManager:
   - Platform
   - Player
   - Projectile
-  - 
+  - Boss
   - 
   - 
   - 
