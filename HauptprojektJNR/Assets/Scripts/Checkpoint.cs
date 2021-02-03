@@ -12,6 +12,6 @@ public class Checkpoint : MonoBehaviour
         {
             player.GetComponentInParent<PlayerController>().lastCheckpoint = this.transform.position;
         }
-       
+        
     }
 }

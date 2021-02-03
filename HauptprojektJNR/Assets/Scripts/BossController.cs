@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-
+using UnityEngine.Tilemaps;
 public class BossController : MonoBehaviour
 {
     /*
@@ -13,6 +13,7 @@ public class BossController : MonoBehaviour
     **/
     //--Components--
     [SerializeField] LayerMask playerLayers;
+    [SerializeField] LayerMask wallLayer;
     public Transform firepoint;
     public Transform attackPoint;
     public Transform healthBarOverHead;
@@ -20,58 +21,131 @@ public class BossController : MonoBehaviour
     private BoxCollider2D bossCollider;
     private Animator bossAnimator;
     private Rigidbody2D bossRb;
+    public Transform summon0;
+    public Transform summon1;
+    public Transform summon2;
+    public GameObject bossGate;
+    public Transform boundsLeft;
+    public Transform boundsRight;
     //--Parameter--
     public float health;
     public float maxHealth = 50;
-    public float moveSpeed = 5;
+    public float moveSpeed = 5f;
     public float launchSpeed = 5f;
-    private float bossPhase = 1;
+    public int bossPhase = 1;
     private PlayerController playerTargetController;
     private Vector3 playerTargetPosition;
     private bool targetFound = false;
     public float lookOnRange = 20f;
     public float meleeDamage = 5f;
-    public float attackRange = 3f;
+    public float attackRange = 1f;
     private bool shootRight = false;
+    private bool jump = true;
+    private GameObject[] summons;
+    private Vector2 spawnPoint;
+    private bool mL = true;
     //Animation Speed
     public float summonSpeed = 1f;
     public float attackSpeed = 1.5f;
+    private int phaseDuration = 0;
+    public int maxPhase1Duration;
+    public int maxPhase2Durtation;
+    public int maxPhase3Durtation;
     void Start()
     {
         bossAnimator = GetComponent<Animator>();
+        health = maxHealth;
+        summons = new GameObject[3];
+        spawnPoint = transform.position;
     }
-    
+
     // Update is called once per frame
     void Update()
     {
-        bossAnimator.SetFloat("AttackSpeed", attackSpeed);
-    }
 
+        float healthPercentage = health / maxHealth;
+        healthBarOverHead.localScale = new Vector3(healthPercentage, 1, 1);
+        bossAnimator.SetInteger("IdleState", bossPhase - 1);
+        bossAnimator.SetFloat("AttackSpeed", attackSpeed);
+        findTarget();
+        if (bossGate.active == true)
+        {
+            if (targetFound && bossPhase == 1)
+            {
+                Debug.LogError("Target: " + playerTargetPosition);
+                if (Vector2.Distance(playerTargetPosition, this.transform.position) <= 1.5f)
+                {
+
+                    Attack();
+                }
+                else
+                {
+                    Move();
+                }
+
+            }
+            if (targetFound && bossPhase == 3)
+            {
+                Move();
+                Attack();
+
+            }
+            if (targetFound && bossPhase == 2)
+            {
+                Move();
+
+            }
+
+        }
+        if(health < maxHealth) { 
+        bossPhotonView.RPC("updateBossPhase", RpcTarget.AllBuffered);
+        }
+    }
+    [PunRPC]
+    void updateBossPhase()
+    {
+        float change = maxHealth / 4;
+
+        if (health > 3 * change || health < change)
+        {
+            bossPhase = 1;
+        }
+        if (health < 3 * change)
+        {
+            bossPhase = 2;
+        }
+        if (health < 2 * change)
+        {
+            bossPhase = 3;
+        }
+    }
     void Attack()
     {
-        if(bossPhase == 1)
+        if (bossPhase == 1)
         {
             //Langsam MeleeAttack
             attackSpeed = 0.7f;
-            MeleeAttack();
+            bossAnimator.SetTrigger("Attack");
 
         }
-        else if(bossPhase == 2)
+        else if (bossPhase == 2)
         {
             //Schnell MeleeAttack
             attackSpeed = 2f;
-            MeleeAttack();
+            bossAnimator.SetTrigger("Attack");
         }
-        else if(bossPhase == 3)
+        else if (bossPhase == 3)
         {
             //Summon 
             //Ranged Attack
-            Shoot();
+
+            bossAnimator.SetTrigger("Shoot");
+            //Shoot();
         }
     }
     void MeleeAttack()
     {
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange , playerLayers);
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, playerLayers);
         //Damage
         foreach (CircleCollider2D enemy in hitEnemies)
         {
@@ -80,19 +154,17 @@ public class BossController : MonoBehaviour
             {
                 enemy.GetComponent<PlayerController>().IsAttacked(meleeDamage);
             }
-            //enemy.GetComponentInParent<EnemyController>().health--;
+
         }
     }
     void Shoot()
     {
-        GameObject summon = PhotonNetwork.Instantiate("Arrow", firepoint.position, firepoint.rotation);
-        if (shootRight)
+
+        spawnSummon();
+
+        foreach (GameObject summon in summons)
         {
-            summon.GetComponent<Rigidbody2D>().velocity = firepoint.right * launchSpeed;
-        }
-        else
-        {
-            summon.GetComponent<Rigidbody2D>().velocity = -1f * firepoint.right * launchSpeed;
+            summon.GetComponent<Rigidbody2D>().velocity = summon.transform.up.normalized * -1f * launchSpeed;
         }
     }
     void Move()
@@ -100,32 +172,78 @@ public class BossController : MonoBehaviour
         if (bossPhase == 1)
         {
             //Schnell ein Spieler verfolgen
-            
+
+            transform.position = Vector2.MoveTowards(transform.position, playerTargetPosition, Time.deltaTime * moveSpeed);
+
         }
         else if (bossPhase == 2)
         {
+
+            bossAnimator.SetTrigger("teleport");
             //Auf einen Spieler teleportieren
         }
         else if (bossPhase == 3)
         {
-            //Weglaufen vor Beiden Spielern
+            //Hochfliegen 5 nach rechts dann 5 nach links repeat
+            MovePhase3();
         }
     }
-    void MovePhase1()
-    {
 
-    }
     void TelePortPhase2()
     {
+        if (jump)
+        {
 
+            transform.position = playerTargetPosition + new Vector3(0.8f, 1, 0);
+            bossAnimator.SetTrigger("Attack");
+            jump = false;
+        }
+        else
+        {
+            transform.position = spawnPoint;
+            jump = true;
+        }
     }
     void MovePhase3()
     {
+        if (Vector2.Distance(boundsLeft.position, transform.position) < 1 && mL)
+        {
+            mL = false;
+        }
+        if (Vector2.Distance(boundsRight.position, transform.position) < 1 && !mL)
+        {
+            mL = true;
+        }
+        if (mL)
+        {
+            moveLeft();
+        }
+        else
+        {
+            moveRight();
+        }
+    }
+    void moveRight()
+    {
+        transform.position = Vector2.MoveTowards(this.transform.position, boundsRight.position, moveSpeed * Time.deltaTime);
+    }
+    void moveLeft()
+    {
+        transform.position = Vector2.MoveTowards(this.transform.position, boundsLeft.position, moveSpeed * Time.deltaTime);
+    }
+    void spawnSummon()
+    {
 
+        summons[0] = PhotonNetwork.Instantiate("Summon", summon0.position, summon0.rotation);
+
+        summons[1] = PhotonNetwork.Instantiate("Summon", summon1.position, summon1.rotation);
+
+        summons[2] = PhotonNetwork.Instantiate("Summon", summon2.position, summon2.rotation);
     }
     void Die()
     {
         //Gebe Xp Offne Wand
+        bossGate.active = false;
     }
     public void IsAttacked(float dmg)
     {
@@ -135,62 +253,129 @@ public class BossController : MonoBehaviour
     {
 
         PlayerController playerTarget = null;
-        Vector3 target = transform.position;
-        RaycastHit2D targetRight = Physics2D.Raycast(transform.position, Vector3.right, lookOnRange, playerLayers); ;
-        RaycastHit2D targetLeft = Physics2D.Raycast(transform.position, Vector3.left, lookOnRange, playerLayers);
-        //Finde Links Target
-        if (targetLeft.collider != null)
+        Vector2 target = new Vector2(0, 0);
+        RaycastHit2D targetRight = Physics2D.Raycast(attackPoint.position, Vector3.right, lookOnRange, playerLayers);
+        RaycastHit2D targetLeft = Physics2D.Raycast(attackPoint.position, Vector3.left, lookOnRange, playerLayers);
+        if (PhotonNetwork.PlayerList.Length > 1)
         {
-            playerTarget = targetLeft.collider.GetComponentInParent<PlayerController>();
-            if (!playerTarget.dead)
+            RaycastHit2D[] targetsLeft = Physics2D.RaycastAll(attackPoint.position, Vector3.left, lookOnRange, playerLayers);
+            RaycastHit2D[] targetsRight = Physics2D.RaycastAll(attackPoint.position, Vector3.right, lookOnRange, playerLayers);
+            if (targetsLeft.Length == 2 || targetsRight.Length == 2 || (targetsRight.Length == 1 && targetsRight.Length == 1))
             {
-                target = targetLeft.transform.position;
-                bossPhotonView.RPC("FlipTrue", RpcTarget.AllBuffered);
-                targetFound = true;
+
+                //direction false = rechts true = links
+                bool direction = false;
+                RaycastHit2D[] targets;
+
+                if (targetsLeft.Length == 2)
+                {
+                    targets = targetsLeft;
+                    direction = true;
+                }
+                else if (targetsRight.Length == 2)
+                {
+                    targets = targetsRight;
+                    direction = false;
+
+                }
+                else
+                {
+                    targets = new RaycastHit2D[] { targetsLeft[0], targetsRight[0] };
+                }
+                PlayerController player1 = targets[0].collider.GetComponentInParent<PlayerController>();
+                PlayerController player2 = targets[1].collider.GetComponentInParent<PlayerController>();
+                if (player1.dead)
+                {
+                    playerTargetController = player2;
+                    playerTargetPosition = targets[1].transform.position;
+
+                    targetFound = true;
+                }
+                if (player2.dead)
+                {
+                    playerTargetController = player1;
+                    playerTargetPosition = targets[0].transform.position;
+
+                    targetFound = true;
+                }
+                if (Vector2.Distance(this.transform.position, targets[0].transform.position) <= Vector2.Distance(this.transform.position, targets[1].transform.position))
+                {
+                    playerTargetController = player1;
+                    playerTargetPosition = targets[0].transform.position;
+                    direction = true;
+                    targetFound = true;
+                }
+                else
+                {
+                    playerTargetController = player2;
+                    playerTargetPosition = targets[1].transform.position;
+                    direction = false;
+                    targetFound = true;
+                }
+                if (direction)
+                {
+                    bossPhotonView.RPC("FlipTrue", RpcTarget.AllBuffered);
+                }
+                else
+                {
+                    bossPhotonView.RPC("FlipFalse", RpcTarget.AllBuffered);
+                }
             }
-            Debug.Log(targetFound + " Jaaa");
         }
-        //Finde Rechts Target
-        if (targetRight.collider != null)
+        else
         {
-            playerTarget = targetRight.collider.GetComponentInParent<PlayerController>();
-            if (!playerTarget.dead)
-            {
-                target = targetRight.transform.position;
-                bossPhotonView.RPC("FlipFalse", RpcTarget.AllBuffered);
-                targetFound = true;
-            }
-        }
-        //Links und Rechts Targets -> naherer wird Target
-        if (targetLeft.collider != null && targetRight.collider != null)
-        {
-            PlayerController playerLeft = targetLeft.collider.GetComponentInParent<PlayerController>();
-            PlayerController playerRight = playerTarget = targetRight.collider.GetComponentInParent<PlayerController>();
-            if (targetRight.distance >= targetLeft.distance && !playerLeft.dead)
+            if (targetLeft.collider != null)
             {
                 playerTarget = targetLeft.collider.GetComponentInParent<PlayerController>();
                 if (!playerTarget.dead)
                 {
-                    target = targetLeft.transform.position;
+                    playerTargetPosition = targetLeft.transform.position;
                     bossPhotonView.RPC("FlipTrue", RpcTarget.AllBuffered);
                     targetFound = true;
                 }
 
             }
-            else
+            //Finde Rechts Target
+            if (targetRight.collider != null)
             {
                 playerTarget = targetRight.collider.GetComponentInParent<PlayerController>();
                 if (!playerTarget.dead)
                 {
-                    target = targetRight.transform.position;
+                    playerTargetPosition = targetRight.transform.position;
                     bossPhotonView.RPC("FlipFalse", RpcTarget.AllBuffered);
                     targetFound = true;
                 }
             }
-        }
-        playerTargetPosition = target;
-        playerTargetController = playerTarget;
+            //Links und Rechts Targets -> naherer wird Target
+            if (targetLeft.collider != null && targetRight.collider != null)
+            {
+                PlayerController playerLeft = targetLeft.collider.GetComponentInParent<PlayerController>();
+                PlayerController playerRight = playerTarget = targetRight.collider.GetComponentInParent<PlayerController>();
+                if (targetRight.distance >= targetLeft.distance && !playerLeft.dead)
+                {
+                    playerTarget = targetLeft.collider.GetComponentInParent<PlayerController>();
+                    if (!playerTarget.dead)
+                    {
+                        playerTargetPosition = targetLeft.transform.position;
+                        bossPhotonView.RPC("FlipTrue", RpcTarget.AllBuffered);
+                        targetFound = true;
+                    }
 
+                }
+                else
+                {
+                    playerTarget = targetRight.collider.GetComponentInParent<PlayerController>();
+                    if (!playerTarget.dead)
+                    {
+                        playerTargetPosition = targetRight.transform.position;
+                        bossPhotonView.RPC("FlipFalse", RpcTarget.AllBuffered);
+                        targetFound = true;
+                    }
+                }
+            }
+
+        }
+        
     }
     [PunRPC]
     private void FlipTrue()

@@ -19,6 +19,7 @@ TagManager:
   - Projectile
   - BossGate
   - Boss
+  - Summon
   layers:
   - Default
   - TransparentFX
@@ -33,7 +34,7 @@ TagManager:
   - Player
   - Projectile
   - Boss
-  - 
+  - wallLayer
   - 
   - 
   - 

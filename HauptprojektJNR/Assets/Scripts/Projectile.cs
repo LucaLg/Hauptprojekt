@@ -12,6 +12,7 @@ public class Projectile : MonoBehaviour
     private PhotonView photonView;
     private bool lookRight = false;
     private Vector3 playerTarget;
+    public bool calcAngle;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,9 +24,10 @@ public class Projectile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (calcAngle) { 
         float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {

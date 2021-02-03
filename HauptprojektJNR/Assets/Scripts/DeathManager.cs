@@ -133,5 +133,5 @@ public class DeathManager :MonoBehaviourPunCallbacks
             playerDead.transform.position = playerDead.GetComponent<PlayerController>().lastCheckpoint;
         }
     }
-
+    
 }

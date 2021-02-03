@@ -76,7 +76,7 @@ public class EnemyController : MonoBehaviour,IPunObservable
             return;
         }
         photonView.RPC("Die", RpcTarget.AllBuffered);
-        photonView.RPC("SetHealth", RpcTarget.AllBuffered, healthArray);
+        //photonView.RPC("SetHealth", RpcTarget.AllBuffered, healthArray);
         if (isDead)
         {
 

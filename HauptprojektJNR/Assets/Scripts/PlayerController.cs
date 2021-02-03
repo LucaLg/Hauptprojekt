@@ -474,6 +474,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             {
                 enemy.GetComponent<ArcherController>().IsAttacked(damage * damageModifier);
             }
+            if(enemy.TryGetComponent(out BossController bossC))
+            {
+                enemy.GetComponent<BossController>().IsAttacked(damage * damageModifier);
+            }
             
             addHealth(damage * damageModifier * lifeDrain);
             addMana(damage * damageModifier * manaDrain);

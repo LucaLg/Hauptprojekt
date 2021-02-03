@@ -161,6 +161,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   destroyTime: 8
   damage: 0.5
+  calcAngle: 1
 --- !u!61 &2174474474994317912
 BoxCollider2D:
   m_ObjectHideFlags: 0
