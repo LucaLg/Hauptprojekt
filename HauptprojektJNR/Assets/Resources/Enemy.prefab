@@ -172,8 +172,8 @@ MonoBehaviour:
   hit: 0
   attackRange: 1.5
   damage: 2
-  xpOnDeath: 50
-  AttackSpeed: 0.5
+  xpOnDeath: 7
+  AttackSpeed: 0.8
 --- !u!114 &3221881251541401735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -291,11 +291,17 @@ MonoBehaviour:
     SynchronizeType: 2
     Name: AnimState
   - Type: 9
-    SynchronizeType: 1
+    SynchronizeType: 2
     Name: hit
   - Type: 9
     SynchronizeType: 1
     Name: Dead
+  - Type: 9
+    SynchronizeType: 2
+    Name: Attack
+  - Type: 1
+    SynchronizeType: 2
+    Name: AttackSpeed
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0

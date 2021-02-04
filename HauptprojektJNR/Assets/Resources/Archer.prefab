@@ -278,7 +278,7 @@ MonoBehaviour:
   moveSpeed: 1
   fireRate: 0
   hit: 0
-  damage: 2
+  damage: 0.3
   givenXp: 2
   firePoint: {fileID: 360379523698863708}
   launchForce: 15
