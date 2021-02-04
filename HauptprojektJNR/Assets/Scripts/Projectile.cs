@@ -37,19 +37,16 @@ public class Projectile : MonoBehaviour
             Debug.LogError("PlayerHit");
 
             collision.GetComponentInParent<PlayerController>().IsAttacked(damage);
-            //photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);
-            PhotonNetwork.Destroy(this.gameObject);
+            photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);
 
         }
         if(collision.tag == "Boden")
         {
-            PhotonNetwork.Destroy(this.gameObject);
-            //photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);
+            photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);
         }
         else if (collision.tag != "Archer")
         {
-           // StartCoroutine(destroyProjectile());
-            PhotonNetwork.Destroy(this.gameObject);
+            StartCoroutine(destroyProjectile());
         }
 
     }
@@ -61,7 +58,7 @@ public class Projectile : MonoBehaviour
     IEnumerator destroyProjectile()
     {
         yield return new WaitForSeconds(destroyTime);
-        PhotonNetwork.Destroy(this.gameObject);
+        photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);
     }
 
     [PunRPC]
