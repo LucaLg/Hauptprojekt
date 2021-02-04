@@ -20,6 +20,7 @@ TagManager:
   - BossGate
   - Boss
   - Summon
+  - DeadZone
   layers:
   - Default
   - TransparentFX

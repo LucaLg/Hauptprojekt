@@ -44,10 +44,14 @@ public class Projectile : MonoBehaviour
         {
             photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);
         }
-        else if (collision.tag != "Archer")
+        if(collision.tag == "Deadzone")
+        {
+            photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);
+        }
+       /* else if (collision.tag != "Archer")
         {
             StartCoroutine(destroyProjectile());
-        }
+        }*/
 
     }
     [PunRPC]

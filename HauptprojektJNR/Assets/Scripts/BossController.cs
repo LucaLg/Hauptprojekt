@@ -62,7 +62,10 @@ public class BossController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (health < 0)
+        {
+            bossPhotonView.RPC("Die", RpcTarget.AllBuffered);
+        }
         float healthPercentage = health / maxHealth;
         healthBarOverHead.localScale = new Vector3(healthPercentage, 1, 1);
         bossAnimator.SetInteger("IdleState", bossPhase - 1);
@@ -240,9 +243,11 @@ public class BossController : MonoBehaviour
 
         summons[2] = PhotonNetwork.Instantiate("Summon", summon2.position, summon2.rotation);
     }
+    [PunRPC]
     void Die()
     {
         //Gebe Xp Offne Wand
+        this.enabled = false;
         bossGate.active = false;
     }
     public void IsAttacked(float dmg)
@@ -256,7 +261,7 @@ public class BossController : MonoBehaviour
         Vector2 target = new Vector2(0, 0);
         RaycastHit2D targetRight = Physics2D.Raycast(attackPoint.position, Vector3.right, lookOnRange, playerLayers);
         RaycastHit2D targetLeft = Physics2D.Raycast(attackPoint.position, Vector3.left, lookOnRange, playerLayers);
-        if (PhotonNetwork.PlayerList.Length > 1)
+        /*if (PhotonNetwork.PlayerList.Length > 1)
         {
             RaycastHit2D[] targetsLeft = Physics2D.RaycastAll(attackPoint.position, Vector3.left, lookOnRange, playerLayers);
             RaycastHit2D[] targetsRight = Physics2D.RaycastAll(attackPoint.position, Vector3.right, lookOnRange, playerLayers);
@@ -278,7 +283,7 @@ public class BossController : MonoBehaviour
                     direction = false;
 
                 }
-                else
+                else if(targetsRight.Length == 1 && targetsRight.Length == 1)
                 {
                     targets = new RaycastHit2D[] { targetsLeft[0], targetsRight[0] };
                 }
@@ -323,7 +328,7 @@ public class BossController : MonoBehaviour
             }
         }
         else
-        {
+        {*/
             if (targetLeft.collider != null)
             {
                 playerTarget = targetLeft.collider.GetComponentInParent<PlayerController>();
@@ -374,7 +379,7 @@ public class BossController : MonoBehaviour
                 }
             }
 
-        }
+        /*}*/
         
     }
     [PunRPC]
@@ -389,5 +394,17 @@ public class BossController : MonoBehaviour
 
         transform.localScale = new Vector3(1, 1, 1);
         shootRight = true;
+    }
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+
+        if (stream.IsWriting)
+        {
+            stream.SendNext(health);
+        }
+        else if (stream.IsReading)
+        {
+            health = (float)stream.ReceiveNext();
+        }
     }
 }
