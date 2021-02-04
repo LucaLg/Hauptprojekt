@@ -222,7 +222,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if (Time.time >= nextAttackTime && Input.GetKeyDown("b") && stamina >= 2)
         {
             //Play Animation
-            animPlayer.SetTrigger("Attack");
+            
+            photonView.RPC("triggerAttack", RpcTarget.AllBuffered);
             stamina -= 2;
             //photonView.RPC("Attack", RpcTarget.AllBuffered);
             nextAttackTime = Time.time + AttackSpeed;
@@ -363,6 +364,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         this.playerCam.SetActive(false);
         cam.enabled = true;
+    }
+    [PunRPC]
+    void triggerAttack()
+    {
+        animPlayer.SetTrigger("Attack");
     }
     private void LevelUp()
     {

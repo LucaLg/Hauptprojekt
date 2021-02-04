@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.Tilemaps;
-public class BossController : MonoBehaviour
+public class BossController : MonoBehaviour,IPunObservable
 {
     /*
      * Boss hat Drei Phasen 
