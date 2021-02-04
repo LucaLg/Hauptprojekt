@@ -283,3 +283,4 @@ MonoBehaviour:
   firePoint: {fileID: 360379523698863708}
   launchForce: 15
   lookOnRange: 7
+  Arrow: {fileID: 827806986446047101, guid: 0454a0a35ba6c384ba5fc9715e78e86b, type: 3}

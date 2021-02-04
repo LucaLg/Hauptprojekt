@@ -19,6 +19,7 @@ public class DeathManager :MonoBehaviourPunCallbacks
     public Camera deathCam;
     public GameObject LobbyObject;
     public PhotonScript LobbyScript;
+    public GameObject boss;
     void Start()
     {
         enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -119,7 +120,7 @@ public class DeathManager :MonoBehaviourPunCallbacks
             player.GetComponent<PlayerController>().Respawn();
             player.transform.position= player.GetComponent<PlayerController>().lastCheckpoint;
         }
-        
+        boss.GetComponent<BossController>().respawn();
     }
     /*
      * Wenn ein Spieler stirbt und der andere den naechsten Checkpoint erreicht wird der Tode spieler Respawnt

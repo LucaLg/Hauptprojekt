@@ -29,6 +29,7 @@ public class ArcherController : MonoBehaviour
     private bool shootRight = false;
     public float launchForce = 4;
     public float lookOnRange = 7f;
+    public GameObject Arrow;
     void Start()
     {
         Photon = GameObject.Find("Photon");
@@ -36,6 +37,7 @@ public class ArcherController : MonoBehaviour
         archerAnimator = GetComponent<Animator>();
         //firePoint = GetComponentInChildren<Transform>();
         photonView = GetComponent<PhotonView>();
+
     }
 
     // Update is called once per frame
@@ -62,23 +64,29 @@ public class ArcherController : MonoBehaviour
         if (targetFound) {
             //Move();
             archerAnimator.SetTrigger("Attack");
+            //photonView.RPC("Attack", RpcTarget.AllBuffered);
         }
         else
         {
             archerAnimator.SetInteger("AnimState", 0);
         }
     }
+    [PunRPC]
     private void Attack() {
         //Instantiate Arrow
         //Damage in ArrowScript
-        GameObject arrow = PhotonNetwork.Instantiate("Arrow", firePoint.position, firePoint.rotation); 
+        GameObject arrow = Instantiate(Arrow, firePoint.position, firePoint.rotation);
+        
+        
+        
         if(shootRight)
         {
             arrow.GetComponent<Rigidbody2D>().velocity = firePoint.right * launchForce;
         }
         else 
-        { 
-            arrow.GetComponent<Rigidbody2D>().velocity = -1f * firePoint.right * launchForce;
+        {
+            Rigidbody2D rb = arrow.GetComponent<Rigidbody2D>();
+            rb.velocity = -1f * firePoint.right * launchForce;
         }
     }
     void Move()

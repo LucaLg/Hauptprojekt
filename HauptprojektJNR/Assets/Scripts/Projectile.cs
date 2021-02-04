@@ -16,7 +16,7 @@ public class Projectile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        photonView = GetComponent<PhotonView>();
+        //photonView = GetComponent<PhotonView>();
         rb = GetComponent<Rigidbody2D>();
 
     }
@@ -37,17 +37,19 @@ public class Projectile : MonoBehaviour
 
             collision.GetComponentInParent<PlayerController>().IsAttacked(damage);
             //DestroyArrow();
-            photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);
+            //PhotonNetwork.Destroy(this.gameObject);
+            Destroy(this.gameObject);
 
         }
         if(collision.tag == "Boden")
         {
-            DestroyArrow();
-            photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);
+            
+            Destroy(this.gameObject);
         }
         if(collision.tag == "Deadzone")
         {
-            photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);
+          
+            Destroy(this.gameObject);
         }
        /* else if (collision.tag != "Archer")
         {
@@ -60,15 +62,15 @@ public class Projectile : MonoBehaviour
     {
         if (photonView.IsMine)
         {
-            Destroy(this.gameObject);
+            
         }
        
     }
-    IEnumerator destroyProjectile()
+   /* IEnumerator destroyProjectile()
     {
-        yield return new WaitForSeconds(destroyTime);
-        photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);
-    }
+        *//*yield return new WaitForSeconds(destroyTime);
+        photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);*//*
+    }*/
 
     [PunRPC]
     private void FlipTrue()
