@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 public class PhotonScript : MonoBehaviourPunCallbacks
 {
@@ -11,6 +13,7 @@ public class PhotonScript : MonoBehaviourPunCallbacks
     public PlayerController Player1;
     public PlayerController Player2;
     public PhotonView LobbyView;
+    public GameData player1Data, player2Data;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,13 +25,42 @@ public class PhotonScript : MonoBehaviourPunCallbacks
         roomOptions.MaxPlayers = 2;
         
         PhotonNetwork.JoinOrCreateRoom("Room1", roomOptions, null);
-        
+        PhotonNetwork.NetworkingClient.LoadBalancingPeer.DisconnectTimeout = 500000;
+
+
     }
     public override void OnJoinedRoom()
     {
         //float x = Random.Range(-3, 5);
-        PhotonNetwork.Instantiate("Player", spawnPoint.position, Quaternion.identity);
+        GameObject myPlayer = PhotonNetwork.Instantiate("Player", spawnPoint.position, Quaternion.identity);
         Debug.LogAssertion("RaumJoined");
+        if (StaticData.load) {
+            Debug.Log("Loading");
+            //LobbyView.RPC("UpdatePlayers", RpcTarget.AllBuffered);
+            player1Data = loadFromFile("save.json");
+            Debug.Log(player1Data.health);
+            if(player1Data != null)
+            {
+                //BinaryFormatter bf = new BinaryFormatter();
+                //var ms = new MemoryStream();
+                //bf.Serialize(ms, player1Data);
+                //byte[] dataAsArray = ms.ToArray();
+                //try
+                //{
+                //    player2Data = loadFromFile("savePlayer2.json");
+
+                //}
+                //catch (FileNotFoundException e)
+                //{
+                //    Debug.LogError(e.Message);
+                //}
+                myPlayer.GetComponent<PlayerController>().LoadPlayerStateFromGameData(player1Data);
+                //Player1.photonView.RPC("LoadPlayerStateFromGameData", RpcTarget.AllBuffered, dataAsArray);
+
+
+            }
+            
+        }
         LobbyView.RPC("UpdatePlayers", RpcTarget.AllBuffered);
         //PhotonNetwork.Instantiate("Enemy", new Vector3(x, -1.57f, 0), Quaternion.identity);
     }
@@ -45,8 +77,18 @@ public class PhotonScript : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
 
     {
-        Debug.LogAssertion("On Player enter");
+        Debug.Log("On Player enter");
         LobbyView.RPC("UpdatePlayers", RpcTarget.AllBuffered);
+        //if(Player2 != null && player2Data != null)
+        //{
+        //    BinaryFormatter bf = new BinaryFormatter();
+        //    var ms = new MemoryStream();
+        //    bf.Serialize(ms, player2Data);
+        //    byte[] dataAsArray = ms.ToArray();
+        //    Debug.Log("Sending other Player load command; health: " + player2Data.health);
+        //    Player2.photonView.RPC("LoadPlayerStateFromGameData", RpcTarget.AllBuffered, dataAsArray);
+        //    StaticData.load = false;
+        //}
     }
     [PunRPC]
     void UpdatePlayers()
@@ -81,5 +123,12 @@ public class PhotonScript : MonoBehaviourPunCallbacks
     public GameObject[] GetPlayers()
     {
         return Players;
+    }
+    private GameData loadFromFile(string dest)
+    {
+        string destination = Application.persistentDataPath + "\\" + dest;
+        GameData data = JsonUtility.FromJson<GameData>(File.ReadAllText(destination));
+
+        return data;
     }
 }
