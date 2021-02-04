@@ -31,22 +31,23 @@ public class Projectile : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        
         if (collision.tag == "Player")
         {
             Debug.LogError("PlayerHit");
 
             collision.GetComponentInParent<PlayerController>().IsAttacked(damage);
-            photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);
+            DestroyArrow();
+            //photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);
 
         }
         if(collision.tag == "Boden")
         {
-            photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);
+            DestroyArrow();
+            //photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);
         }
         if(collision.tag == "Deadzone")
         {
-            photonView.RPC("DestroyArrow", RpcTarget.AllBuffered);
+            DestroyArrow();
         }
        /* else if (collision.tag != "Archer")
         {
@@ -57,7 +58,11 @@ public class Projectile : MonoBehaviour
     [PunRPC]
     private void DestroyArrow()
     {
-        Destroy(this.gameObject);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.Destroy(this.gameObject);
+        }
+       
     }
     IEnumerator destroyProjectile()
     {
