@@ -1138,7 +1138,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Increase Range
+  m_Text: Increase Attackspeed
 --- !u!1 &2069201469341653446
 GameObject:
   m_ObjectHideFlags: 0
@@ -2003,7 +2003,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2429462212632727541}
-        m_MethodName: IncreaseRange
+        m_MethodName: IncreaseAttackspeed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

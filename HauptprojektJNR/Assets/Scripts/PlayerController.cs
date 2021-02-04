@@ -81,6 +81,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         health = maxHealth;
         stamina = maxStamina;
         mana = maxMana;
+        Debug.Log("Awake finished");
     }
     void Start()
     {   
@@ -108,7 +109,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         rage = rageLevel * 3.05f;
         manaDrain = drainManaLevel * 0.05f;
         lifeDrain = drainLifeLevel * 0.05f;
-        Debug.Log("Started");
+        Debug.Log("Start finished");
     }
 
     // Update is called once per frame
@@ -228,10 +229,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public void saveGame()
     {
         string destination = Application.persistentDataPath + "/save.json";
-        if(otherPlayer != null)
-        {
-            otherPlayer.RPC("returnGameData", RpcTarget.AllBuffered);
-        }
+        //if(otherPlayer != null)
+        //{
+        //    otherPlayer.RPC("requestGameData", RpcTarget.AllBuffered);
+        //}
         GameData data = new GameData(level, skillPoints, attributePoints, drainLifeLevel, drainManaLevel, rageLevel, healLevel, health, maxHealth, 
                 mana, maxMana, maxStamina, xp, lastCheckpoint, damage, AttackSpeed, otherPlayerData);
         string jsonData = JsonUtility.ToJson(data, true);
@@ -239,26 +240,72 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         Debug.Log("Saved at " + destination);
     }
     [PunRPC]
-    public void returnGameData()
+    public void requestGameData()
     {
+        Debug.Log("Entered requestGameData");
         GameData data = new GameData(level, skillPoints, attributePoints, drainLifeLevel, drainManaLevel, rageLevel, healLevel, health, maxHealth,
                 mana, maxMana,  maxStamina, xp, lastCheckpoint, damage, AttackSpeed);
-        object[] dataAsArray = new object[1];
-        dataAsArray[0] = data;
-        otherPlayer.RPC("SetOtherPlayerData", RpcTarget.AllBuffered, dataAsArray as object);
+        BinaryFormatter bf = new BinaryFormatter();
+        var ms = new MemoryStream();
+        bf.Serialize(ms, data);
+        byte[] dataAsArray = ms.ToArray();
+        otherPlayer.RPC("SaveOtherPlayerData", RpcTarget.AllBuffered, dataAsArray);
     }
     [PunRPC]
-    public void SetOtherPlayerData(object[] data)
+    public void SaveOtherPlayerData(byte[] dataAsArray)
     {
-
-        otherPlayerData = (GameData) data[0];
+        Debug.Log("Entered SaveOtherPlayerData");
+        string destination = Application.persistentDataPath + "/savePlayer2.json";
+        //Convert bytearray zu GameData
+        var ms = new MemoryStream();
+        var bf = new BinaryFormatter();
+        ms.Write(dataAsArray, 0, dataAsArray.Length);
+        ms.Seek(0, SeekOrigin.Begin);
+        GameData data = (GameData)bf.Deserialize(ms);
+        string jsonData = JsonUtility.ToJson(data, true);
+        File.WriteAllText(destination, jsonData);
     }
 
-    //LoadGame() triggert von Load Button
     //RPC: LoadFromGameData wird von masterClient.PhotonScript aufgerufen
-    [PunRPC]
+    //[PunRPC]
+    //public void LoadPlayerStateFromGameData(byte[] dataAsArray)
+    //{
+    //    //Convert bytearray zu GameData
+    //    Debug.Log("LoadPlayer entered");
+    //    var ms = new MemoryStream();
+    //    var bf = new BinaryFormatter();
+    //    ms.Write(dataAsArray, 0, dataAsArray.Length);
+    //    ms.Seek(0, SeekOrigin.Begin);
+    //    GameData data = (GameData) bf.Deserialize(ms);
+
+    //    Debug.Log("Entered // Level:" + data.level + "Health: " + data.health + "Mana: " + data.mana);
+    //    level = data.level;
+    //    skillPoints = data.skillPoints;
+    //    attributePoints = data.attributePoints;
+    //    drainLifeLevel = data.lifeDrainLevel;
+    //    drainManaLevel = data.manaDrainLevel;
+    //    rageLevel = data.rageLevel;
+    //    healLevel = data.healLevel;
+    //    health = data.health;
+    //    maxHealth = data.maxHealth;
+    //    mana = data.mana;
+    //    maxMana = data.maxMana;
+    //    stamina = data.stamina;
+    //    maxStamina = data.maxStamina;
+    //    xp = data.XP;
+    //    lastCheckpoint = new Vector3(data.currentCheckpointX, data.currentCheckpointY, 0);
+    //    AttackSpeed = data.attackspeed;
+    //    damage = data.damage;
+    //    transform.position = lastCheckpoint;
+    //    txtAttrPoints.text = "Points: " + attributePoints;
+    //    txtSkillPoints.text = "Points: " + skillPoints;
+    //    txtLevel.text = "Lvl " + level;
+    //    Debug.Log("Load finished");
+    //}
     public void LoadPlayerStateFromGameData(GameData data)
     {
+        
+
         Debug.Log("Entered // Level:" + data.level + "Health: " + data.health + "Mana: " + data.mana);
         level = data.level;
         skillPoints = data.skillPoints;
@@ -281,7 +328,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         txtAttrPoints.text = "Points: " + attributePoints;
         txtSkillPoints.text = "Points: " + skillPoints;
         txtLevel.text = "Lvl " + level;
-        Debug.Log("HealthAFterLoad" + health);
+        Debug.Log("Load finished");
     }
     public void SetCamera(Camera cam)
     {
@@ -318,6 +365,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if(attributePoints > 0)
         {
             attributePoints -= 1;
+            txtAttrPoints.text = "Points: " + attributePoints.ToString();
             maxHealth += 2f;
             addHealth(2f);
         }
@@ -328,6 +376,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if(attributePoints > 0)
         {
             attributePoints -= 1;
+            txtAttrPoints.text = "Points: " + attributePoints.ToString();
             maxStamina += 1f;
             addStamina(1f);
 
@@ -337,11 +386,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     /*
      * AttackSpeed Rpc Um Animation Anzupassen
      */
-    public void IncreaseRange()
+    public void IncreaseAttackspeed()
     {
         if (attributePoints > 0)
         {
             attributePoints -= 1;
+            txtAttrPoints.text = "Points: " + attributePoints.ToString();
             AttackSpeed -= 0.1f;
             AttackAnimSpeedMultiplier += 0.05f;
             
@@ -357,6 +407,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if (attributePoints > 0)
         {
             attributePoints -= 1;
+            txtAttrPoints.text = "Points: " + attributePoints.ToString();
             damage += 0.3f;
 
         }
@@ -367,6 +418,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if(skillPoints > 0)
         {
             skillPoints -= 1;
+            txtSkillPoints.text = "Points: " + skillPoints;
             drainLifeLevel += 1;
             lifeDrain = drainLifeLevel * 0.05f;
         }
@@ -378,6 +430,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if (skillPoints > 0)
         {
             skillPoints -= 1;
+            txtSkillPoints.text = "Points: " + skillPoints;
             drainManaLevel += 1;
             manaDrain = drainManaLevel * 0.05f;
         }
@@ -389,6 +442,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if (skillPoints > 0)
         {
             skillPoints -= 1;
+            txtSkillPoints.text = "Points: " + skillPoints;
             healLevel += 1;
             heal = healLevel * 0.05f;
         }
@@ -398,7 +452,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         if (skillPoints > 0)
         {
+            
             skillPoints -= 1;
+            txtSkillPoints.text = "Points: " + skillPoints;
             rageLevel += 1;
             rage = rageLevel * 0.05f;
         }
@@ -444,7 +500,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [PunRPC]
     private void addXP(float amount)
     {
-        Debug.LogWarning("Xp gegeben");
+        
         xp += amount;
         if(xp >= xpToNextLevel)
         {

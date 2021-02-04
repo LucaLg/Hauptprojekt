@@ -24,21 +24,38 @@ public class PhotonScript : MonoBehaviourPunCallbacks
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 2;
         PhotonNetwork.JoinOrCreateRoom("Room1", roomOptions, null);
-        
+        PhotonNetwork.NetworkingClient.LoadBalancingPeer.DisconnectTimeout = 500000;
+
+
     }
     public override void OnJoinedRoom()
     {
         //float x = Random.Range(-3, 5);
-        PhotonNetwork.Instantiate("Player", spawnPoint.position, Quaternion.identity);
+        GameObject myPlayer = PhotonNetwork.Instantiate("Player", spawnPoint.position, Quaternion.identity);
         Debug.LogAssertion("RaumJoined");
         if (StaticData.load) {
-            LobbyView.RPC("UpdatePlayers", RpcTarget.AllBuffered);
-            player1Data = loadFromFile();
+            Debug.Log("Loading");
+            //LobbyView.RPC("UpdatePlayers", RpcTarget.AllBuffered);
+            player1Data = loadFromFile("save.json");
+            Debug.Log(player1Data.health);
             if(player1Data != null)
             {
-                //player2Data = player1Data.otherPlayerData;
-                //Player1.photonView.RPC("LoadPlayerStateFromGameData", RpcTarget.AllBuffered, player1Data);
-                Player1.LoadPlayerStateFromGameData(player1Data);
+                //BinaryFormatter bf = new BinaryFormatter();
+                //var ms = new MemoryStream();
+                //bf.Serialize(ms, player1Data);
+                //byte[] dataAsArray = ms.ToArray();
+                //try
+                //{
+                //    player2Data = loadFromFile("savePlayer2.json");
+
+                //}
+                //catch (FileNotFoundException e)
+                //{
+                //    Debug.LogError(e.Message);
+                //}
+                myPlayer.GetComponent<PlayerController>().LoadPlayerStateFromGameData(player1Data);
+                //Player1.photonView.RPC("LoadPlayerStateFromGameData", RpcTarget.AllBuffered, dataAsArray);
+
 
             }
             
@@ -59,13 +76,18 @@ public class PhotonScript : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
 
     {
-        Debug.LogAssertion("On Player enter");
+        Debug.Log("On Player enter");
         LobbyView.RPC("UpdatePlayers", RpcTarget.AllBuffered);
-        if(Player2 != null && player2Data != null)
-        {
-            Player2.photonView.RPC("LoadPlayerStateFromGameData", RpcTarget.AllBuffered, player2Data);
-            StaticData.load = false;
-        }
+        //if(Player2 != null && player2Data != null)
+        //{
+        //    BinaryFormatter bf = new BinaryFormatter();
+        //    var ms = new MemoryStream();
+        //    bf.Serialize(ms, player2Data);
+        //    byte[] dataAsArray = ms.ToArray();
+        //    Debug.Log("Sending other Player load command; health: " + player2Data.health);
+        //    Player2.photonView.RPC("LoadPlayerStateFromGameData", RpcTarget.AllBuffered, dataAsArray);
+        //    StaticData.load = false;
+        //}
     }
     [PunRPC]
     void UpdatePlayers()
@@ -101,26 +123,11 @@ public class PhotonScript : MonoBehaviourPunCallbacks
     {
         return Players;
     }
-    private GameData loadFromFile()
+    private GameData loadFromFile(string dest)
     {
-        string destination = Application.persistentDataPath + "/save.json";
-        //Debug.Log("Try to load from " + destination);
-        //FileStream file;
-
-        //if (File.Exists(destination)) file = File.OpenRead(destination);
-        //else
-        //{
-        //    Debug.LogError("File not found");
-        //    return null;
-        //}
-
-        //BinaryFormatter bf = new BinaryFormatter();
-        //GameData data = (GameData) bf.Deserialize(file);
-        //file.Close();
+        string destination = Application.persistentDataPath + "\\" + dest;
         GameData data = JsonUtility.FromJson<GameData>(File.ReadAllText(destination));
-        Debug.Log(data.stamina);
 
         return data;
-        Debug.Log("Loaded (?)");
     }
 }

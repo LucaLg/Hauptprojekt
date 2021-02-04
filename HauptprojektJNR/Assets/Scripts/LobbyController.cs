@@ -12,5 +12,6 @@ public class LobbyController : MonoBehaviour
     {
         StaticData.load = true;
         UnityEngine.SceneManagement.SceneManager.LoadScene("Game");
+
     }
 }
