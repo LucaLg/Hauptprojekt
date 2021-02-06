@@ -172,7 +172,7 @@ MonoBehaviour:
   hit: 0
   attackRange: 1.5
   damage: 2
-  xpOnDeath: 7
+  xpOnDeath: 5
   AttackSpeed: 1
 --- !u!114 &3221881251541401735
 MonoBehaviour:
