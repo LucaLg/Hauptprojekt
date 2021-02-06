@@ -1487,6 +1487,76 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 'Next Level: 5% -> 10%'
+--- !u!58 &87352511180515169
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5316969998028384532}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: a479111fc98a3bd42bf9d76fc0b9e3bf, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.0783903, y: 0.7809833}
+  serializedVersion: 2
+  m_Radius: 0.49638808
+--- !u!114 &5635216035495977486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5316969998028384532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 4
+    SynchronizeType: 1
+    Name: Grounded
+  - Type: 4
+    SynchronizeType: 1
+    Name: isMoving
+  - Type: 4
+    SynchronizeType: 1
+    Name: Alive
+  - Type: 1
+    SynchronizeType: 1
+    Name: AttackSpeed
+  - Type: 4
+    SynchronizeType: 2
+    Name: Fall
+  - Type: 4
+    SynchronizeType: 2
+    Name: IdleBlock
+  - Type: 9
+    SynchronizeType: 2
+    Name: Die
+  - Type: 9
+    SynchronizeType: 2
+    Name: Jump
+  - Type: 9
+    SynchronizeType: 2
+    Name: Attack
+  - Type: 9
+    SynchronizeType: 2
+    Name: Block
+  - Type: 9
+    SynchronizeType: 2
+    Name: Hit
+  - Type: 9
+    SynchronizeType: 2
+    Name: DoubleJump
+  m_SynchronizeLayers:
+  - SynchronizeType: 0
+    LayerIndex: 0
 --- !u!1 &2919353993192719810
 GameObject:
   m_ObjectHideFlags: 0
@@ -1658,8 +1728,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 8886325777857203036}
-  m_Father: {fileID: 4980168113027180179}
-  m_RootOrder: 4
+  m_Father: {fileID: 4018288263115851881}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1699,7 +1769,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -2126,6 +2196,7 @@ Transform:
   - {fileID: 7513814734713586897}
   - {fileID: 959021251033935149}
   - {fileID: 8124320905207026111}
+  - {fileID: 7407567345845496197}
   m_Father: {fileID: 4980168113027180179}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2160,7 +2231,7 @@ Transform:
   - {fileID: 4222738780718475751}
   - {fileID: 5713809232976163813}
   m_Father: {fileID: 4980168113027180179}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4482403859890613835
 GameObject:
@@ -2435,76 +2506,6 @@ Transform:
   m_Father: {fileID: 4980168113027180179}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &87352511180515169
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5316969998028384532}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 6200000, guid: a479111fc98a3bd42bf9d76fc0b9e3bf, type: 2}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.0783903, y: 0.7809833}
-  serializedVersion: 2
-  m_Radius: 0.49638808
---- !u!114 &5635216035495977486
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5316969998028384532}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowLayerWeightsInspector: 1
-  ShowParameterInspector: 1
-  m_SynchronizeParameters:
-  - Type: 4
-    SynchronizeType: 1
-    Name: Grounded
-  - Type: 4
-    SynchronizeType: 1
-    Name: isMoving
-  - Type: 4
-    SynchronizeType: 1
-    Name: Alive
-  - Type: 1
-    SynchronizeType: 1
-    Name: AttackSpeed
-  - Type: 4
-    SynchronizeType: 2
-    Name: Fall
-  - Type: 4
-    SynchronizeType: 2
-    Name: IdleBlock
-  - Type: 9
-    SynchronizeType: 2
-    Name: Die
-  - Type: 9
-    SynchronizeType: 2
-    Name: Jump
-  - Type: 9
-    SynchronizeType: 2
-    Name: Attack
-  - Type: 9
-    SynchronizeType: 2
-    Name: Block
-  - Type: 9
-    SynchronizeType: 2
-    Name: Hit
-  - Type: 9
-    SynchronizeType: 2
-    Name: DoubleJump
-  m_SynchronizeLayers:
-  - SynchronizeType: 0
-    LayerIndex: 0
 --- !u!1 &5643108443969897180
 GameObject:
   m_ObjectHideFlags: 0
@@ -3411,8 +3412,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 283, y: 201}
-  m_SizeDelta: {x: 68.34891, y: 25.417435}
+  m_AnchoredPosition: {x: 116, y: 246}
+  m_SizeDelta: {x: 68.34891, y: 25.41742}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4019417263264122165
 CanvasRenderer:
@@ -3444,7 +3445,7 @@ MonoBehaviour:
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 18
-    m_FontStyle: 0
+    m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 1
     m_MaxSize: 40
@@ -4357,7 +4358,6 @@ Transform:
   - {fileID: 2975143963857324763}
   - {fileID: 7265220421409125202}
   - {fileID: 4018288263115851881}
-  - {fileID: 7407567345845496197}
   - {fileID: 3693092988681058685}
   m_Father: {fileID: 5316969998028384528}
   m_RootOrder: 1
@@ -5017,6 +5017,11 @@ PrefabInstance:
       propertyPath: playerCollider
       value: 
       objectReference: {fileID: 87352511180515169}
+    - target: {fileID: 7032596770027271040, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7032596770027271041, guid: 3c91e24437a48c24382ebdb2070f8cfb,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5271,12 +5276,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2905210481774746257}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &5316969998028384532 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7032596770027271045, guid: 3c91e24437a48c24382ebdb2070f8cfb,
-    type: 3}
-  m_PrefabInstance: {fileID: 2905210481774746257}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2429462212632727541 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 713343940645459300, guid: 3c91e24437a48c24382ebdb2070f8cfb,
@@ -5289,3 +5288,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5841b7b18caf2104cbcc27a2633692fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &5316969998028384532 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7032596770027271045, guid: 3c91e24437a48c24382ebdb2070f8cfb,
+    type: 3}
+  m_PrefabInstance: {fileID: 2905210481774746257}
+  m_PrefabAsset: {fileID: 0}
