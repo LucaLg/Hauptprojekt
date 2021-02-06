@@ -173,7 +173,7 @@ MonoBehaviour:
   attackRange: 1.5
   damage: 2
   xpOnDeath: 7
-  AttackSpeed: 0.8
+  AttackSpeed: 1
 --- !u!114 &3221881251541401735
 MonoBehaviour:
   m_ObjectHideFlags: 0
